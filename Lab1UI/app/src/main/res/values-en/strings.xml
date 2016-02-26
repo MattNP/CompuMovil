@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UI Lab</string>
+    <string name="nombre">First Name</string>
+    <string name="apellido">Last Name</string>
+    <string name="fecha_nacimiento">Born Date</string>
+    <string name="seleccionar">Select</string>
+    <string name="pais">Country</string>
+    <string name="correo">E-mail</string>
+    <string name="genero">Gender</string>
+    <string name="masculino">Male</string>
+    <string name="femenino">Female</string>
+    <string name="telefono">Phone</string>
+    <string name="direccion">Address</string>
+    <string name="aficiones">Hobbies</string>
+    <string name="deportes">Sports</string>
+    <string name="videojuegos">Videogames</string>
+    <string name="literatura">Literature</string>
+    <string name="musica">Music</string>
+    <string name="favorito">Favorite</string>
+    <string name="show">Show</string>
+</resources>

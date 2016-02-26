@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Laboratorio UI</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="fecha_nacimiento">Fecha de nacimiento</string>
+    <string name="seleccionar">Seleccionar</string>
+    <string name="pais">País</string>
+    <string name="correo">E-mail</string>
+    <string name="genero">Género</string>
+    <string name="masculino">Masculino</string>
+    <string name="femenino">Femenino</string>
+    <string name="telefono">Teléfono</string>
+    <string name="direccion">Dirección</string>
+    <string name="aficiones">Aficiones</string>
+    <string name="deportes">Deportes</string>
+    <string name="videojuegos">Videojuegos</string>
+    <string name="literatura">Literatura</string>
+    <string name="musica">Música</string>
+    <string name="favorito">Favorito</string>
+    <string name="mostrar">Mostrar</string>
+</resources>
