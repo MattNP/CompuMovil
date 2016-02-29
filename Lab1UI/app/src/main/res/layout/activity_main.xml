@@ -10,50 +10,46 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="co.edu.udea.compumovil.gr4.lab1ui.MainActivity">
 
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ScrollView01"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
     <RelativeLayout
         android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
+
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/nombre"
             android:hint="@string/nombre"
+            android:inputType="text|textNoSuggestions|textCapWords"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/fecha_nacimiento"
-            android:layout_alignEnd="@+id/fecha_nacimiento" />
+            android:layout_alignParentStart="true" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/apellido"
             android:hint="@string/apellido"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/nombre"
-            android:layout_alignRight="@+id/seleccionar_fecha"
-            android:layout_alignEnd="@+id/seleccionar_fecha" />
+            android:layout_below="@id/nombre"
+            android:inputType="text|textNoSuggestions|textCapWords"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/fecha_nacimiento"
             android:hint="@string/fecha_nacimiento"
+            android:editable="false"
             android:layout_below="@+id/apellido"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/seleccionar"
-            android:id="@+id/seleccionar_fecha"
-            android:layout_below="@+id/apellido"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
         <RadioGroup
             android:id="@+id/seleccionar_genero"
@@ -62,7 +58,7 @@
             android:orientation="horizontal"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/seleccionar_fecha">
+            android:layout_below="@+id/fecha_nacimiento">
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -80,28 +76,24 @@
         </RadioGroup>
 
         <AutoCompleteTextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pais"
             android:id="@+id/pais"
-            android:layout_below="@+id/seleccionar_genero"
+            android:layout_below="@+id/telefono"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/telefono"
-            android:layout_toLeftOf="@+id/telefono" />
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/telefono"
+            android:inputType="phone"
             android:id="@+id/telefono"
-            android:layout_alignTop="@+id/pais"
-            android:layout_toRightOf="@+id/fecha_nacimiento"
-            android:layout_alignRight="@+id/seleccionar_fecha"
-            android:layout_alignEnd="@+id/seleccionar_fecha" />
+            android:layout_below="@id/seleccionar_genero" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/direccion"
             android:id="@+id/direccion"
@@ -110,20 +102,18 @@
             android:layout_alignParentStart="true" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/correo"
             android:id="@+id/correo"
             android:layout_below="@+id/direccion"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/spinner"
-            android:layout_alignEnd="@+id/spinner" />
+            android:layout_alignParentStart="true" />
 
         <Spinner
             android:layout_width="168dp"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner"
+            android:id="@+id/aficiones"
             android:layout_below="@+id/correo"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -134,12 +124,12 @@
             android:text="@string/favorito"
             android:id="@+id/favorito"
             android:checked="false"
-            android:layout_alignTop="@+id/spinner"
-            android:layout_toRightOf="@+id/pais"
-            android:layout_toEndOf="@+id/pais" />
+            android:layout_below="@id/correo"
+            android:layout_toRightOf="@id/aficiones"/>
+
 
     </RelativeLayout>
-
+    </ScrollView>
 
     <RelativeLayout
         android:layout_weight="1"
@@ -168,5 +158,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
+
 
 </LinearLayout>

@@ -13,10 +13,15 @@
     <string name="telefono">Phone</string>
     <string name="direccion">Address</string>
     <string name="aficiones">Hobbies</string>
-    <string name="deportes">Sports</string>
-    <string name="videojuegos">Videogames</string>
-    <string name="literatura">Literature</string>
-    <string name="musica">Music</string>
     <string name="favorito">Favorite</string>
     <string name="show">Show</string>
+
+    <string-array name="aficiones_array">
+        <item>Sports</item>
+        <item>Videogames</item>
+        <item>Literature</item>
+        <item>Music</item>
+        <item>Travel</item>
+    </string-array>
+
 </resources>

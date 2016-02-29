@@ -9,13 +9,19 @@
     <string name="genero">Género</string>
     <string name="masculino">Masculino</string>
     <string name="femenino">Femenino</string>
+    <string name="aficiones">Aficiones</string>
     <string name="telefono">Teléfono</string>
     <string name="direccion">Dirección</string>
-    <string name="aficiones">Aficiones</string>
-    <string name="deportes">Deportes</string>
-    <string name="videojuegos">Videojuegos</string>
-    <string name="literatura">Literatura</string>
-    <string name="musica">Música</string>
     <string name="favorito">Favorito</string>
     <string name="mostrar">Mostrar</string>
+
+    <string-array name="aficiones_array">
+        <item>Deportes</item>
+        <item>Videojuegos</item>
+        <item>Literatura</item>
+        <item>Música</item>
+    </string-array>
+
 </resources>
+
+
