@@ -14,121 +14,127 @@
         android:id="@+id/ScrollView01"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-    <RelativeLayout
-        android:layout_weight="3"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+        <RelativeLayout
+            android:layout_weight="3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/nombre"
-            android:hint="@string/nombre"
-            android:inputType="text|textNoSuggestions|textCapWords"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/nombre"
+                android:hint="@string/nombre"
+                android:inputType="text|textNoSuggestions|textCapWords"
+                android:imeOptions="actionNext"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/apellido"
-            android:hint="@string/apellido"
-            android:layout_below="@id/nombre"
-            android:inputType="text|textNoSuggestions|textCapWords"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/apellido"
+                android:hint="@string/apellido"
+                android:inputType="text|textNoSuggestions|textCapWords"
+                android:imeOptions="actionNext"
+                android:layout_below="@id/nombre"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/fecha_nacimiento"
-            android:hint="@string/fecha_nacimiento"
-            android:editable="false"
-            android:layout_below="@+id/apellido"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fecha_nacimiento"
+                android:hint="@string/fecha_nacimiento"
+                android:editable="false"
+                android:layout_below="@+id/apellido"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-        <RadioGroup
-            android:id="@+id/seleccionar_genero"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/fecha_nacimiento">
-
-            <RadioButton
+            <RadioGroup
+                android:id="@+id/seleccionar_genero"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/masculino"
-                android:id="@+id/masculino"
-                android:checked="false" />
+                android:orientation="horizontal"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/fecha_nacimiento">
 
-            <RadioButton
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/masculino"
+                    android:id="@+id/masculino"
+                    android:checked="false" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/femenino"
+                    android:id="@+id/femenino"
+                    android:checked="false" />
+            </RadioGroup>
+
+            <AutoCompleteTextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pais"
+                android:id="@+id/pais"
+                android:imeOptions="actionNext"
+                android:inputType="textCapWords"
+                android:layout_below="@+id/telefono"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/telefono"
+                android:inputType="phone"
+                android:imeOptions="actionNext"
+                android:id="@+id/telefono"
+                android:layout_below="@id/seleccionar_genero" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/direccion"
+                android:imeOptions="actionNext"
+                android:inputType="textNoSuggestions"
+                android:id="@+id/direccion"
+                android:layout_below="@+id/pais"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/correo"
+                android:inputType="textEmailAddress"
+                android:id="@+id/correo"
+                android:layout_below="@+id/direccion"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <Spinner
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/aficiones"
+                android:layout_below="@+id/correo"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/femenino"
-                android:id="@+id/femenino"
-                android:checked="false" />
-        </RadioGroup>
-
-        <AutoCompleteTextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/pais"
-            android:id="@+id/pais"
-            android:layout_below="@+id/telefono"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/telefono"
-            android:inputType="phone"
-            android:id="@+id/telefono"
-            android:layout_below="@id/seleccionar_genero" />
-
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/direccion"
-            android:id="@+id/direccion"
-            android:layout_below="@+id/pais"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/correo"
-            android:id="@+id/correo"
-            android:layout_below="@+id/direccion"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Spinner
-            android:layout_width="168dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/aficiones"
-            android:layout_below="@+id/correo"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/favorito"
-            android:id="@+id/favorito"
-            android:checked="false"
-            android:layout_below="@id/correo"
-            android:layout_toRightOf="@id/aficiones"/>
-
-
-    </RelativeLayout>
+                android:text="@string/favorito"
+                android:id="@+id/favorito"
+                android:checked="false"
+                android:layout_below="@id/correo"
+                android:layout_toRightOf="@id/aficiones"/>
+        </RelativeLayout>
     </ScrollView>
 
     <RelativeLayout
@@ -158,6 +164,4 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
-
-
 </LinearLayout>

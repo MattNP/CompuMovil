@@ -27,15 +27,15 @@ import java.util.Collections;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private static RadioGroup rg;
-    private static RadioButton rb;
 
-    Spinner sp;
-    Button btn;
-    TextView txt_Calendar,txt_apellido,txt_nombre,txt_telefono,txt_correo,txt_direccion,
-    txt_fecha,txt_sexo,txt_aficion,txt_escritorio,txt_pais;
-    int year_x, month_x, day_x;
-    static final int Dialog_id = 0;
+    private static RadioGroup rg_genero;
+    private static RadioButton rb_genero;
+    private static Spinner sp_aficiones;
+    private static Button btn_mostrar;
+    private static TextView txt_calendar, txt_apellido, txt_nombre, txt_telefono, txt_correo, txt_direccion,
+    txt_fecha, txt_sexo, txt_aficion, txt_mostrar, txt_pais;
+    private int year_x, month_x, day_x;
+    private static final int Dialog_id = 0;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 countries.add(country);
             }
         }
+
         Collections.sort(countries);
         ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countries);
         textView.setAdapter(adapter);
@@ -75,44 +76,44 @@ public class MainActivity extends AppCompatActivity {
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter1);
 
-        onClick();
+
 
         showDialogMostrarFecha();
 
     }
 
     public void onClick(){
-        rg=(RadioGroup)findViewById(R.id.seleccionar_genero);
-        btn=(Button)findViewById(R.id.mostrar);
-        txt_escritorio=(TextView)findViewById(R.id.escritorio);
-        sp=(Spinner)findViewById(R.id.aficiones);
+        rg_genero=(RadioGroup)findViewById(R.id.seleccionar_genero);
+        btn_mostrar=(Button)findViewById(R.id.mostrar);
+        txt_mostrar=(TextView)findViewById(R.id.escritorio);
+        sp_aficiones=(Spinner)findViewById(R.id.aficiones);
 
 
 
-        btn.setOnClickListener(
+        btn_mostrar.setOnClickListener(
                 new View.OnClickListener(){
 
                     @Override
                     public void onClick(View v) {
-                        int seleccion_id=rg.getCheckedRadioButtonId();
-                        rb=(RadioButton)findViewById(seleccion_id);
+                        int seleccion_id=rg_genero.getCheckedRadioButtonId();
+                        rb_genero=(RadioButton)findViewById(seleccion_id);
                         txt_nombre=(TextView)findViewById(R.id.nombre);
                         txt_apellido=(TextView)findViewById(R.id.apellido);
                         txt_pais=(TextView)findViewById(R.id.pais);
                         txt_telefono=(TextView)findViewById(R.id.telefono);
                         txt_direccion=(TextView)findViewById(R.id.direccion);
                         txt_correo=(TextView)findViewById(R.id.correo);
-                        txt_aficion=(TextView)findViewById(R.id.aficiones);
+                        //txt_aficion=(TextView)findViewById(R.id.aficiones);
 
 
-                        txt_escritorio.setText("Nombre= "+txt_nombre.getText()+"\n"+
-                                "Sexo= "+rb.getText().toString()+"\n"+
-                                "Fecha de nacimiendo= "+txt_Calendar.getText().toString()+"\n"+
-                                "Pais= "+txt_pais.getText().toString()+"\n"+
-                                "Telefono= "+txt_telefono.getText().toString()+"\n"+
-                                "Direccion= "+txt_direccion.getText().toString()+"\n"+
-                                "Correo= "+txt_correo.getText().toString()+"\n"+
-                                "Hobbie= "+sp.getOnItemSelectedListener().toString());
+                        txt_mostrar.setText(getResources().getString(R.string.nombre) + txt_nombre.getText()+"\n");
+                                /*getResources().getString(R.string.nombre) + rb_genero.getText().toString()+"\n"+
+                                getResources().getString(R.string.nombre) +txt_calendar.getText().toString()+"\n"+
+                                getResources().getString(R.string.nombre) +txt_pais.getText().toString()+"\n"+
+                                getResources().getString(R.string.nombre) +txt_telefono.getText().toString()+"\n"+
+                                getResources().getString(R.string.nombre) +txt_direccion.getText().toString()+"\n"+
+                                getResources().getString(R.string.nombre) +txt_correo.getText().toString()+"\n"+
+                                getResources().getString(R.string.nombre) +sp_aficiones.getOnItemSelectedListener().toString()); */
 
                     }
                 }
@@ -124,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showDialogMostrarFecha() {
-        txt_Calendar = (TextView) findViewById(R.id.fecha_nacimiento);
-        txt_Calendar.setOnClickListener(
+        txt_calendar = (TextView) findViewById(R.id.fecha_nacimiento);
+        txt_calendar.setOnClickListener(
                 new View.OnClickListener() {
 
                     @Override
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     year_x=year;
                     month_x=monthyear + 1;
                     day_x=dayofmonth;
-                    txt_Calendar.setText(year_x + "/" + month_x + "/" + day_x);
+                    txt_calendar.setText(year_x + "/" + month_x + "/" + day_x);
                     Toast.makeText(MainActivity.this,year_x + "/" + month_x + "/" + day_x,Toast.LENGTH_LONG).show();
                 }
             };

@@ -14,7 +14,7 @@
     <string name="direccion">Address</string>
     <string name="aficiones">Hobbies</string>
     <string name="favorito">Favorite</string>
-    <string name="show">Show</string>
+    <string name="mostrar">Show</string>
 
     <string-array name="aficiones_array">
         <item>Sports</item>

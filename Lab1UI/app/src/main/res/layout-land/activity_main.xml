@@ -1,6 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    tools:context="co.edu.udea.compumovil.gr4.lab1ui.MainActivity">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:fillViewport="true" >
+
+    <RelativeLayout
+        android:layout_weight="3"
+        android:layout_width="450dp"
+        android:layout_height="match_parent"  >
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/nombre"
+            android:hint="@string/nombre"
+            android:inputType="text|textNoSuggestions|textCapWords"
+            android:imeOptions="actionNext"
+            android:layout_alignParentEnd="false" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/apellido"
+            android:hint="@string/apellido"
+            android:inputType="text|textNoSuggestions|textCapWords"
+            android:imeOptions="actionNext"
+            android:layout_below="@id/nombre"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fecha_nacimiento"
+            android:hint="@string/fecha_nacimiento"
+            android:editable="false"
+            android:layout_below="@+id/apellido"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <RadioGroup
+            android:id="@+id/seleccionar_genero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/fecha_nacimiento">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/masculino"
+                android:id="@+id/masculino"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/femenino"
+                android:id="@+id/femenino"
+                android:checked="false" />
+        </RadioGroup>
+
+        <AutoCompleteTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pais"
+            android:id="@+id/pais"
+            android:imeOptions="actionNext"
+            android:inputType="textCapWords"
+            android:layout_below="@+id/telefono"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/telefono"
+            android:inputType="phone"
+            android:imeOptions="actionNext"
+            android:id="@+id/telefono"
+            android:layout_below="@id/seleccionar_genero" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/direccion"
+            android:imeOptions="actionNext"
+            android:inputType="textNoSuggestions"
+            android:id="@+id/direccion"
+            android:layout_below="@+id/pais"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/correo"
+            android:inputType="textEmailAddress"
+            android:id="@+id/correo"
+            android:layout_below="@+id/direccion"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Spinner
+            android:layout_width="168dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/aficiones"
+            android:layout_below="@+id/correo"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorito"
+            android:id="@+id/favorito"
+            android:checked="false"
+            android:layout_below="@id/correo"
+            android:layout_toRightOf="@id/aficiones"/>
+
+    </RelativeLayout>
+    </ScrollView>
+
+
+    <RelativeLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/escritorio"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/mostrar"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mostrar"
+            android:id="@+id/mostrar"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
 </LinearLayout>
