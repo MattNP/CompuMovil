@@ -7,5 +7,6 @@
     <string name="correo">Correo</string>
     <string name="confirmar">Confirmar contraseña</string>
     <string name="registro">Registrarme</string>
+    <string name="title_activity_eventos">Eventos</string>
 
 </resources>

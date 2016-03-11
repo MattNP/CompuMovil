@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:text="@string/ingresar"
         android:id="@+id/ingresar"
+        android:onClick="ingresar"
         android:layout_marginTop="39dp"
         android:layout_below="@+id/clave"
         android:layout_alignLeft="@+id/registrar"
