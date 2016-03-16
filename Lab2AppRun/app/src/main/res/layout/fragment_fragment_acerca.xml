@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="co.edu.udea.compumovil.gr4.lab2apprun.FragmentAcerca">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/app_name"
+        android:id="@+id/nombreAplicacion"
+        android:layout_marginTop="65dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/acerca_creador1"
+        android:id="@+id/creador1"
+        android:layout_marginTop="67dp"
+        android:layout_below="@+id/nombreAplicacion"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/acerca_creador2"
+        android:id="@+id/creador2"
+        android:layout_below="@+id/creador1"
+        android:layout_alignLeft="@+id/creador1"
+        android:layout_alignStart="@+id/creador1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/curso"
+        android:id="@+id/cruso"
+        android:layout_below="@+id/creador2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="101dp" />
+</RelativeLayout>
