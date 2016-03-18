@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr4.lab2apprun;
 
 
+import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,9 +19,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class Eventos extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AcercaFragment.OnFragmentInteractionListener,
+        PruebaFragment.OnFragmentInteractionListener{
         public static final String TAG_ACERCA="acerca";
-        Fragment fragmentAcerca;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,27 +90,38 @@ public class Eventos extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        boolean FragmentTransaction=false;
+        Fragment fragment=null;
         if (id == R.id.nav_carreras) {
             // Handle the camera action
             Toast toast=Toast.makeText(getApplicationContext(),"ingreso a las carreras",Toast.LENGTH_SHORT);
             toast.show();
 
-
-
+            
         } else if (id == R.id.nav_perfil) {
+            fragment = new PruebaFragment();
+            FragmentTransaction=true;
 
         } else if (id == R.id.nav_acerca) {
-
-            fragmentAcerca = new FragmentAcerca();
-            FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.drawer_layout, fragmentAcerca,TAG_ACERCA);
-            transaction.commit();
-
+            fragment= new AcercaFragment();
+            FragmentTransaction=true;
 
         }
+        if(FragmentTransaction){
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment).commit();
+
+            item.setChecked(true);
+            getSupportActionBar().setTitle(item.getTitle());
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
