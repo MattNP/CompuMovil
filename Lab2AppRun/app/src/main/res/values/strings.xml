@@ -12,7 +12,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Salir de la aplicación</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="acerca_creador1">Mateo Noreña</string>

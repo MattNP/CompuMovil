@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent =new Intent(this,Eventos.class);
         startActivityForResult(intent, REQUEST);
+        finish();
     }
 
     @Override
@@ -48,5 +49,11 @@ public class MainActivity extends AppCompatActivity {
             user.setText(userL);
             clave.setText(claveL);
         }
+    }
+
+    @Override
+
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

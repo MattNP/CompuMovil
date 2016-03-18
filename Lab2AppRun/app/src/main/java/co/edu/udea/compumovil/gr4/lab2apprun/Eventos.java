@@ -97,7 +97,7 @@ public class Eventos extends AppCompatActivity
             Toast toast=Toast.makeText(getApplicationContext(),"ingreso a las carreras",Toast.LENGTH_SHORT);
             toast.show();
 
-            
+
         } else if (id == R.id.nav_perfil) {
             fragment = new PruebaFragment();
             FragmentTransaction=true;
@@ -123,5 +123,10 @@ public class Eventos extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }
