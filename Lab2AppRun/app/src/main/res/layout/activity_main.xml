@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="@string/registrar"
         android:id="@+id/registrar"
-        android:onClick="Lanzar"
+        android:onClick="registrar"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/ingresar"
         />
