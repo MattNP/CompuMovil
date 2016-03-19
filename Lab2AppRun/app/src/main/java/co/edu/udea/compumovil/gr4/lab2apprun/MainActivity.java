@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     static final String USER="USUARIO";
     static final String CLAVE="CLAVE";
     private EditText txt_user, txt_clave;
+    public static final String ID_USUARIO = "id_usuario";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (cursor.moveToFirst()) {
                 Intent intent =new Intent(this,Eventos.class);
+                intent.putExtra(ID_USUARIO, cursor.getInt(0));
                 startActivityForResult(intent, REQUEST);
                 cursor.close();
                 dbHelper.close();

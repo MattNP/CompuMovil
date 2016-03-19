@@ -1,12 +1,15 @@
 package co.edu.udea.compumovil.gr4.lab2apprun;
 
 
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,10 +23,11 @@ import android.widget.Toast;
 
 public class Eventos extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         AcercaFragment.OnFragmentInteractionListener,
-        PruebaFragment.OnFragmentInteractionListener {
+        PruebaFragment.OnFragmentInteractionListener,
+        PerfilFragment.OnFragmentInteractionListener {
 
     public static final String TAG_ACERCA="acerca";
-
+    private int idUser = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,7 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Lanzar activity o fragment nueva carrera
             }
         });
 
@@ -50,7 +53,14 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        if(getIntent() != null) {
+            idUser = getIntent().getExtras().getInt(MainActivity.ID_USUARIO);
+            Log.d("onCreate", "ID user = " + idUser);
+            Toast toast=Toast.makeText(getApplicationContext(), "ID user = " + idUser, Toast.LENGTH_SHORT);
+        }
 
+        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        //String syncConnPref = sharedPref.getString(SettingsActivity.KEY_PREF_SYNC_CONN, "");
     }
 
     @Override
@@ -95,11 +105,11 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         Fragment fragment=null;
         if (id == R.id.nav_carreras) {
             // Handle the camera action
-            Toast toast=Toast.makeText(getApplicationContext(),"ingreso a las carreras",Toast.LENGTH_SHORT);
+            Toast toast=Toast.makeText(getApplicationContext(),"Ingreso a las carreras",Toast.LENGTH_SHORT);
             toast.show();
 
         } else if (id == R.id.nav_perfil) {
-            fragment = new PruebaFragment();
+            fragment = new PerfilFragment();
             FragmentTransaction=true;
 
         } else if (id == R.id.nav_acerca) {
