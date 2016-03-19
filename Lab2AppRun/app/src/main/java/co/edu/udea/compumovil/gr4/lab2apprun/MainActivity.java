@@ -51,10 +51,14 @@ public class MainActivity extends AppCompatActivity {
             if (cursor.moveToFirst()) {
                 Intent intent =new Intent(this,Eventos.class);
                 startActivityForResult(intent, REQUEST);
+                cursor.close();
+                dbHelper.close();
                 finish();
             } else {
                 txt_clave.setText("");
                 Toast.makeText(this, "El usuario no existe o la contraseña no es correcta", Toast.LENGTH_SHORT).show();
+                dbHelper.close();
+                cursor.close();
             }
         }
     }
@@ -64,9 +68,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST && data != null){
-
-            String userL=data.getStringExtra(USER);
-            String claveL=data.getStringExtra(CLAVE);
+            String userL = data.getStringExtra(USER);
+            String claveL = data.getStringExtra(CLAVE);
             txt_user.setText(userL);
             txt_clave.setText(claveL);
         }

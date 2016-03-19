@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/curso"
-        android:id="@+id/cruso"
+        android:id="@+id/curso"
         android:layout_below="@+id/creador2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="101dp" />

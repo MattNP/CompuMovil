@@ -18,10 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class Eventos extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AcercaFragment.OnFragmentInteractionListener,
-        PruebaFragment.OnFragmentInteractionListener{
-        public static final String TAG_ACERCA="acerca";
+public class Eventos extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        AcercaFragment.OnFragmentInteractionListener,
+        PruebaFragment.OnFragmentInteractionListener {
+
+    public static final String TAG_ACERCA="acerca";
 
 
     @Override
@@ -96,7 +97,6 @@ public class Eventos extends AppCompatActivity
             // Handle the camera action
             Toast toast=Toast.makeText(getApplicationContext(),"ingreso a las carreras",Toast.LENGTH_SHORT);
             toast.show();
-
 
         } else if (id == R.id.nav_perfil) {
             fragment = new PruebaFragment();
