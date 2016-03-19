@@ -29,7 +29,7 @@ public class Registro extends AppCompatActivity {
         String correoR = correo.getText().toString();
 
         if((usuarioR.equals(""))||(claveR.equals(""))||(claveR2.equals(""))||(correoR.equals(""))){
-            Toast.makeText(this,"Hay campos sin diligenciar",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Todos los datos son obligatorios",Toast.LENGTH_SHORT).show();
         }else
 
         if (claveR.equals(claveR2)) {
@@ -57,7 +57,7 @@ public class Registro extends AppCompatActivity {
 
             finish();
         }else{
-            Toast.makeText(this,"Favor confirmar las claves",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Las contraseñas deben coincidir",Toast.LENGTH_SHORT).show();
 
         }
     }
