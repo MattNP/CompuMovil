@@ -22,6 +22,7 @@ public class Registro extends AppCompatActivity {
         txt_clave2 = (EditText)findViewById(R.id.confirmarC);
         txt_correo = (EditText)findViewById(R.id.correo);
     }
+
     public void registrar(View v) {
 
         String usuario = txt_usuario.getText().toString();

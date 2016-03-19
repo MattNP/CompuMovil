@@ -1,13 +1,11 @@
 package co.edu.udea.compumovil.gr4.lab2apprun;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -26,8 +24,9 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         PruebaFragment.OnFragmentInteractionListener,
         PerfilFragment.OnFragmentInteractionListener {
 
-    public static final String TAG_ACERCA="acerca";
-    private int idUser = -1;
+    public static final String TAG_ACERCA = "acerca";
+    private int idUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,8 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Lanzar activity o fragment nueva carrera
+                Intent intent = new Intent(getBaseContext(), NuevaCarreraActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -53,14 +53,17 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        SharedPreferences sharedPref = getSharedPreferences(MainActivity.PREF_USUARIO, MODE_PRIVATE);
+        idUser = sharedPref.getInt(MainActivity.ID_USUARIO, -1);
+        Log.d("Eventos_onCreate", "ID user = " + idUser);
+
+        /*
         if(getIntent() != null) {
             idUser = getIntent().getExtras().getInt(MainActivity.ID_USUARIO);
             Log.d("onCreate", "ID user = " + idUser);
             Toast toast=Toast.makeText(getApplicationContext(), "ID user = " + idUser, Toast.LENGTH_SHORT);
         }
-
-        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        //String syncConnPref = sharedPref.getString(SettingsActivity.KEY_PREF_SYNC_CONN, "");
+        */
     }
 
     @Override
@@ -88,7 +91,7 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.cerrar_sesion) {
             return true;
         }
 
@@ -98,13 +101,12 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         boolean FragmentTransaction=false;
         Fragment fragment=null;
         if (id == R.id.nav_carreras) {
-            // Handle the camera action
             Toast toast=Toast.makeText(getApplicationContext(),"Ingreso a las carreras",Toast.LENGTH_SHORT);
             toast.show();
 
@@ -130,13 +132,31 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         return true;
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    public void cerrarSesion(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.cerrar_sesion) {
+            Log.d("onCreate_clicCerrar", "Presionado");
+            Intent intent= new Intent(this,MainActivity.class);
+            startActivity(intent);
+            SharedPreferences sharedPref = getSharedPreferences(MainActivity.PREF_USUARIO, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

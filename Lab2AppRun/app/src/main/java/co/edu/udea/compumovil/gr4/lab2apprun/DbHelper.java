@@ -38,22 +38,28 @@ public class DbHelper extends SQLiteOpenHelper {
         String sqlCarrera = String.format("" +
                         "create table %s " +
                         "(%s integer primary key autoincrement, " +
+                        "%s integer, " +
                         "%s text, " +
                         "%s real, " +
                         "%s text, " +
                         "%s text, " +
                         "%s blob, " +
                         "%s text, " +
-                        "%s text)",
+                        "%s text, " +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s))",
                 CarrerasContract.TABLE_CARRERA,
                 CarrerasContract.ColumnaCarrera.ID,
+                CarrerasContract.ColumnaCarrera.UID,
                 CarrerasContract.ColumnaCarrera.NOMBRE,
                 CarrerasContract.ColumnaCarrera.DISTANCIA,
                 CarrerasContract.ColumnaCarrera.LUGAR,
                 CarrerasContract.ColumnaCarrera.FECHA,
                 CarrerasContract.ColumnaCarrera.FOTO,
                 CarrerasContract.ColumnaCarrera.TELEFONO,
-                CarrerasContract.ColumnaCarrera.CORREO);
+                CarrerasContract.ColumnaCarrera.CORREO,
+                CarrerasContract.ColumnaCarrera.UID,
+                CarrerasContract.TABLE_CARRERA,
+                CarrerasContract.ColumnaUsuario.ID);
 
         Log.d(TAG, "onCreate with SQL: " + sqlCarrera);
         db.execSQL(sqlCarrera);

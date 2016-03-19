@@ -1,10 +1,13 @@
 package co.edu.udea.compumovil.gr4.lab2apprun;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,7 +18,9 @@ public class MainActivity extends AppCompatActivity {
     static final String USER="USUARIO";
     static final String CLAVE="CLAVE";
     private EditText txt_user, txt_clave;
+    public static final String PREF_USUARIO="pref_usuario";
     public static final String ID_USUARIO = "id_usuario";
+    private int idUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +28,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txt_user = (EditText) findViewById(R.id.usuarioIngreso);
         txt_clave =(EditText) findViewById(R.id.claveIngreso);
+
+        SharedPreferences sharedPref = getSharedPreferences(PREF_USUARIO, Context.MODE_PRIVATE);
+        idUsuario = sharedPref.getInt(ID_USUARIO, -1);
+        Log.d("MainActivity_onCreate", "ID user = " + idUsuario);
+
+        if(idUsuario != -1) {
+            Intent intent = new Intent(this, Eventos.class);
+            intent.putExtra(ID_USUARIO, idUsuario);
+
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     public void registrar(View v){
@@ -50,8 +68,16 @@ public class MainActivity extends AppCompatActivity {
                     null);
 
             if (cursor.moveToFirst()) {
-                Intent intent =new Intent(this,Eventos.class);
+
+                SharedPreferences sharedPref = getSharedPreferences(PREF_USUARIO, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.putInt(ID_USUARIO, cursor.getInt(0));
+                editor.commit();
+
+                Intent intent = new Intent(this,Eventos.class);
                 intent.putExtra(ID_USUARIO, cursor.getInt(0));
+
                 startActivityForResult(intent, REQUEST);
                 cursor.close();
                 dbHelper.close();

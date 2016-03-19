@@ -19,7 +19,8 @@
         <activity
             android:name=".Eventos"
             android:label="@string/title_activity_eventos"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NuevaCarreraActivity"></activity>
     </application>
 
 </manifest>

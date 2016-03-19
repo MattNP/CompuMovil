@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".NuevaCarreraActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nombreCarrera"
+        android:hint="@string/nombreCarrera"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/distanciaCarrera"
+        android:hint="@string/distanciaCarrera"
+        android:layout_below="@+id/nombreCarrera"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lugarCarrera"
+        android:hint="@string/lugarCarrera"
+        android:layout_below="@+id/distanciaCarrera"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fechaCarrera"
+        android:hint="@string/fechaCarrera"
+        android:layout_below="@+id/lugarCarrera"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/telefonoCarrera"
+        android:hint="@string/telefonoCarrera"
+        android:layout_below="@+id/fechaCarrera"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/correoCarrera"
+        android:hint="@string/correoCarrera"
+        android:layout_below="@+id/telefonoCarrera"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/guardarCarrera"
+        android:id="@+id/guardarCarrera"
+        android:onClick="onClick"
+        android:layout_below="@+id/correoCarrera"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

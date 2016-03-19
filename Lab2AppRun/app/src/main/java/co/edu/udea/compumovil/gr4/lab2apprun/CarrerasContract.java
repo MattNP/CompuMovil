@@ -22,6 +22,7 @@ public class CarrerasContract {
 
     public class ColumnaCarrera {
         public static final String ID = BaseColumns._ID;
+        public static final String UID = "usuarioID";
         public static final String NOMBRE = "nombre";
         public static final String DISTANCIA = "distancia";
         public static final String LUGAR = "lugar";
