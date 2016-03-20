@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr4.lab2apprun;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -17,12 +18,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Eventos extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         AcercaFragment.OnFragmentInteractionListener,
-        PruebaFragment.OnFragmentInteractionListener,
-        PerfilFragment.OnFragmentInteractionListener {
+        PerfilFragment.OnFragmentInteractionListener,
+        CarrerasFragment.OnListFragmentInteractionListener{
 
     public static final String TAG_ACERCA = "acerca";
     private int idUser;
@@ -57,13 +59,9 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         idUser = sharedPref.getInt(MainActivity.ID_USUARIO, -1);
         Log.d("Eventos_onCreate", "ID user = " + idUser);
 
-        /*
-        if(getIntent() != null) {
-            idUser = getIntent().getExtras().getInt(MainActivity.ID_USUARIO);
-            Log.d("onCreate", "ID user = " + idUser);
-            Toast toast=Toast.makeText(getApplicationContext(), "ID user = " + idUser, Toast.LENGTH_SHORT);
-        }
-        */
+
+        Fragment fragment = new CarrerasFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment).commit();
     }
 
     @Override
@@ -107,8 +105,8 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
         boolean FragmentTransaction=false;
         Fragment fragment=null;
         if (id == R.id.nav_carreras) {
-            Toast toast=Toast.makeText(getApplicationContext(),"Ingreso a las carreras",Toast.LENGTH_SHORT);
-            toast.show();
+            fragment = new CarrerasFragment();
+            FragmentTransaction=true;
 
         } else if (id == R.id.nav_perfil) {
             fragment = new PerfilFragment();
@@ -158,5 +156,10 @@ public class Eventos extends AppCompatActivity implements NavigationView.OnNavig
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onListFragmentInteraction(Carrera item) {
+        Toast.makeText(this, "Presionó una carrera", Toast.LENGTH_SHORT).show();
     }
 }

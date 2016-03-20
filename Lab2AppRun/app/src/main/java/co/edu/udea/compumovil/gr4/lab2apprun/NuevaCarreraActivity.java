@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr4.lab2apprun;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,8 +43,12 @@ public class NuevaCarreraActivity extends AppCompatActivity {
                 DbHelper dbHelper = new DbHelper(this);
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+                SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.PREF_USUARIO, MODE_PRIVATE);
+                int usuarioId = sharedPreferences.getInt(MainActivity.ID_USUARIO, -1);
+
                 ContentValues values = new ContentValues();
                 values.put(CarrerasContract.ColumnaCarrera.NOMBRE, nombreCarrera);
+                values.put(CarrerasContract.ColumnaCarrera.UID, usuarioId);
                 values.put(CarrerasContract.ColumnaCarrera.DISTANCIA, distanciaCarrera);
                 values.put(CarrerasContract.ColumnaCarrera.LUGAR, lugarCarrera);
                 values.put(CarrerasContract.ColumnaCarrera.FECHA, fechaCarrera);
@@ -57,7 +62,6 @@ public class NuevaCarreraActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Guardar carrera", Toast.LENGTH_SHORT).show();
                 finish();
-
 
                 break;
         }

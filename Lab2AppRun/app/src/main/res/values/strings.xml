@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Carreras</string>
+    <string name="titulo_activity_eventos">Eventos</string>
+    <string name="titulo_activity_registro">Registro</string>
     <string name="usuario">Usuario</string>
     <string name="clave">Contraseña</string>
     <string name="ingresar">Ingresar</string>
@@ -7,7 +9,6 @@
     <string name="correo">Correo</string>
     <string name="confirmar">Confirmar contraseña</string>
     <string name="registro">Registrarme</string>
-    <string name="title_activity_eventos">Eventos</string>
 
     <string name="navigation_drawer_open">Abrir</string>
     <string name="navigation_drawer_close">Cerrar</string>

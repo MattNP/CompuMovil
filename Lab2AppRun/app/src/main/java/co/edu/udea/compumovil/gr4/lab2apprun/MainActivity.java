@@ -15,8 +15,9 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST=1;
-    static final String USER="USUARIO";
-    static final String CLAVE="CLAVE";
+    public static final String USER="USUARIO";
+    public static final String CLAVE="CLAVE";
+    public static final String CORREO="CORREO";
     private EditText txt_user, txt_clave;
     public static final String PREF_USUARIO="pref_usuario";
     public static final String ID_USUARIO = "id_usuario";
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             DbHelper dbHelper = new DbHelper(this);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor cursor = db.query(CarrerasContract.TABLE_USUARIO,
-                    new String[] {CarrerasContract.ColumnaUsuario.ID},
+                    null,
                     CarrerasContract.ColumnaUsuario.USUARIO + "=?" +
                             " and " + CarrerasContract.ColumnaUsuario.CLAVE + "=?",
                     new String[] {usuario, clave},
@@ -72,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sharedPref = getSharedPreferences(PREF_USUARIO, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
-                editor.putInt(ID_USUARIO, cursor.getInt(0));
+                editor.putInt(ID_USUARIO, cursor.getInt(cursor.getColumnIndex(CarrerasContract.ColumnaUsuario.ID)));
+                editor.putInt(USER, cursor.getInt(cursor.getColumnIndex(CarrerasContract.ColumnaUsuario.USUARIO)));
+                editor.putInt(CORREO, cursor.getInt(cursor.getColumnIndex(CarrerasContract.ColumnaUsuario.CORREO)));
                 editor.commit();
 
                 Intent intent = new Intent(this,Eventos.class);

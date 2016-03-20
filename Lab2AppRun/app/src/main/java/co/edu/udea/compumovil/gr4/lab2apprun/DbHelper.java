@@ -58,7 +58,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 CarrerasContract.ColumnaCarrera.TELEFONO,
                 CarrerasContract.ColumnaCarrera.CORREO,
                 CarrerasContract.ColumnaCarrera.UID,
-                CarrerasContract.TABLE_CARRERA,
+                CarrerasContract.TABLE_USUARIO,
                 CarrerasContract.ColumnaUsuario.ID);
 
         Log.d(TAG, "onCreate with SQL: " + sqlCarrera);
