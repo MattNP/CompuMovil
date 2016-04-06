@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class logueo_Sistema extends AppCompatActivity {
+public class Login extends AppCompatActivity {
 
     static final int REQUEST=1;
     public static final String USER="USUARIO";
@@ -25,7 +25,7 @@ public class logueo_Sistema extends AppCompatActivity {
 
     public void Ingresar(View v){
 
-        Intent intent= new Intent(this,CajaPrincipal.class);
+        Intent intent= new Intent(this,Dashboard.class);
         startActivity(intent);
 
     }

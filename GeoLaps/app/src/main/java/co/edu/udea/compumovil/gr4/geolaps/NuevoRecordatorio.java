@@ -3,7 +3,7 @@ package co.edu.udea.compumovil.gr4.geolaps;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Nuevo_Recordatorio extends AppCompatActivity {
+public class NuevoRecordatorio extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

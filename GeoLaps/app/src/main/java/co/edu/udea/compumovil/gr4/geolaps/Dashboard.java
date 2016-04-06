@@ -13,9 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-public class CajaPrincipal extends AppCompatActivity
+public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -31,7 +30,7 @@ public class CajaPrincipal extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "oprimio la tecla", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                Intent intent=new Intent(getBaseContext(),Nuevo_Recordatorio.class);
+                Intent intent=new Intent(getBaseContext(),NuevoRecordatorio.class);
                 startActivity(intent);
 
             }
