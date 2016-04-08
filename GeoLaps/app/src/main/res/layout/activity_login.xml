@@ -49,4 +49,13 @@
         android:layout_alignTop="@+id/btn_login"
         android:layout_toRightOf="@+id/btn_login"
         android:layout_toEndOf="@+id/btn_login"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:background="@mipmap/ic_launcher"
+        android:layout_alignBottom="@+id/usuario_Log"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="78dp" />
 </RelativeLayout>
