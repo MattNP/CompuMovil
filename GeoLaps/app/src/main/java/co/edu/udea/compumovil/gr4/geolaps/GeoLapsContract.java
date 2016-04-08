@@ -44,6 +44,7 @@ public class GeoLapsContract {
 
     public class ColumnaLugar {
         public static final String ID = BaseColumns._ID;
+        public static final String TIPO = "tipo";
         public static final String NOMBRE = "nombre";
         public static final String TELEFONO = "telefono";
         public static final String CORREO = "correo";

@@ -37,6 +37,51 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate with SQL: " + sqlUsuario);
         db.execSQL(sqlUsuario);
 
+        String sqlTipoLugar = String.format("create table %s " +
+                        "(%s integer primary key autoincrement, " +
+                        "%s text)",
+                GeoLapsContract.TABLE_TIPO_LUGAR,
+                GeoLapsContract.ColumnaTipoLugar.ID,
+                GeoLapsContract.ColumnaTipoLugar.TIPO);
+
+        Log.d(TAG, "onCreate with SQL: " + sqlTipoLugar);
+        db.execSQL(sqlTipoLugar);
+
+        String sqlTipoRecordatorio = String.format("create table %s " +
+                        "(%s integer primary key autoincrement, " +
+                        "%s text)",
+                GeoLapsContract.TABLE_TIPO_RECORDATORIO,
+                GeoLapsContract.ColumnaTipoRecordatorio.ID,
+                GeoLapsContract.ColumnaTipoRecordatorio.TIPO);
+
+        Log.d(TAG, "onCreate with SQL: " + sqlTipoRecordatorio);
+        db.execSQL(sqlTipoRecordatorio);
+
+        String sqlLugar = String.format("create table %s " +
+                        "(%s integer primary key autoincrement, " +
+                        "%s integer, " +
+                        "%s text, " +
+                        "%s text, " +
+                        "%s text, " +
+                        "%s double, " +
+                        "%s double, " +
+                        "%s blob, " +
+                        "%s text, " +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s))",
+                GeoLapsContract.TABLE_LUGAR,
+                GeoLapsContract.ColumnaLugar.ID,
+                GeoLapsContract.ColumnaLugar.TIPO,
+                GeoLapsContract.ColumnaLugar.NOMBRE,
+                GeoLapsContract.ColumnaLugar.TELEFONO,
+                GeoLapsContract.ColumnaLugar.CORREO,
+                GeoLapsContract.ColumnaLugar.LATITUD,
+                GeoLapsContract.ColumnaLugar.LONGITUD,
+                GeoLapsContract.ColumnaLugar.FOTO,
+                GeoLapsContract.ColumnaLugar.DIRECCION,
+                GeoLapsContract.ColumnaLugar.TIPO,
+                GeoLapsContract.TABLE_TIPO_LUGAR,
+                GeoLapsContract.ColumnaTipoLugar.ID);
+
         String sqlRecordatorio = String.format("" +
                         "create table %s " +
                         "(%s integer primary key autoincrement, " +
@@ -48,8 +93,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         "%s time, " +
                         "%s datetime, " +
                         "%s text, " +
-                        "FOREIGN KEY(%s) REFERENCES %s(%s))" +
-                        "FOREIGN KEY(%s) REFERENCES %s(%s))" +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s), " +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s), " +
                         "FOREIGN KEY(%s) REFERENCES %s(%s))",
                 GeoLapsContract.TABLE_RECORDATORIO,
                 GeoLapsContract.ColumnaRecordatorio.ID,
@@ -77,8 +122,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //db.execSQL("drop table if exists " + CarrerasContract.TABLE_USUARIO);
-        //db.execSQL("drop table if exists " + CarrerasContract.TABLE_CARRERA);
+        db.execSQL("drop table if exists " + GeoLapsContract.TABLE_USUARIO);
+        db.execSQL("drop table if exists " + GeoLapsContract.TABLE_TIPO_LUGAR);
+        db.execSQL("drop table if exists " + GeoLapsContract.TABLE_TIPO_RECORDATORIO);
+        db.execSQL("drop table if exists " + GeoLapsContract.TABLE_LUGAR);
+        db.execSQL("drop table if exists " + GeoLapsContract.TABLE_RECORDATORIO);
         onCreate(db);
     }
 }

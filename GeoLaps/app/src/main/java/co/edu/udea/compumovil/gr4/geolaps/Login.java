@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr4.geolaps;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +40,9 @@ public class Login extends AppCompatActivity {
         }
 
 
+
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
     }
 }
