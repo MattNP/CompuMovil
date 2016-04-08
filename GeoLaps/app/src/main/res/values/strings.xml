@@ -1,13 +1,21 @@
 <resources>
     <string name="app_name">GeoLaps</string>
-    <string name="usuario">Usuario</string>
+    <string name="usuario">Nombre de usuario</string>
     <string name="pass">Contraseña</string>
-    <string name="Log">Ingresar</string>
-    <string name="Registrar">Registrarme</string>
-    <string name="title_activity_caja_principal">CajaPrincipal</string>
+    <string name="pass2">Confirmación contraseña</string>
+    <string name="Log">Ingreso</string>
+    <string name="Registrar">Registro</string>
+    <string name="title_activity_registro">Registro de usuario</string>
+    <string name="title_activity_nuevo_recordatorio">Nuevo recordatorio</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="nombre">Nombre</string>
+    <string name="correo">Correo</string>
+    <string name="foto">Foto</string>
+
+    <string name="lugar">Lugar</string>
+
+    <string name="action_settings">Opciones</string>
 </resources>

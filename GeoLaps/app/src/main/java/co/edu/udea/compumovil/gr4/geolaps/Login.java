@@ -16,17 +16,29 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_logueo__sistema);
+        setContentView(R.layout.activity_login);
 
         txt_user = (EditText) findViewById(R.id.usuario_Log);
         txt_clave =(EditText) findViewById(R.id.contraseña);
 
     }
 
-    public void Ingresar(View v){
+    public void onClick(View v){
 
-        Intent intent= new Intent(this,Dashboard.class);
-        startActivity(intent);
+        Intent intent;
+
+        switch (v.getId()) {
+            case R.id.btn_registroLogin:
+                intent = new Intent(this, Registro.class);
+                startActivity(intent);
+                break;
+            case R.id.btn_login:
+                intent= new Intent(this,Dashboard.class);
+                startActivity(intent);
+                break;
+        }
+
+
 
     }
 }
