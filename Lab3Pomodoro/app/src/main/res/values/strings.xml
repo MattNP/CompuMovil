@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Pomodoro</string>
+    <string name="startPomodoro">Iniciar Pomodoro</string>
+    <string name="stopPomodoro">Detener Pomodoro</string>
+    <string name="startShortbreak">Iniciar descanso corto</string>
+    <string name="stopShortbreak">Detener descanso corto</string>
+    <string name="startLongbreak">Iniciar descanso largo</string>
+    <string name="stopLongbreak">Detener descanso largo</string>
+    <string name="settings">Configuración</string>
+    <string name="volume">Volumen de alarma</string>
+    <string name="vibration">Vibración</string>
+    <string name="minutes">Minutos</string>
+    <string name="shortbreakTime">Tiempo de descanso corto</string>
+    <string name="longbreakTime">Tiempo de descanso largo</string>
+    <string name="debugMode">Modo Debug</string>
+</resources>
