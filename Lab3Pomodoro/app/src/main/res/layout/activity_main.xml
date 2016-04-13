@@ -9,6 +9,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="co.edu.udea.compumovil.gr4.lab3pomodoro.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:id="@+id/appbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

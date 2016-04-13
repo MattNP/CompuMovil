@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_settings" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefVibration"
+            android:summary="@string/pref_vibration_summary"
+            android:title="@string/pref_vibration" >
+        </CheckBoxPreference>
+
+        <ListPreference
+            android:key="prefShortbreak"
+            android:defaultValue="5"
+            android:entries="@array/shortbreakLenght"
+            android:summary="@string/pref_shortbreakTime_summary"
+            android:entryValues="@array/shortbreakLenghtValues"
+            android:title="@string/pref_shortbreakTime" />
+
+        <ListPreference
+            android:key="prefLongbreak"
+            android:defaultValue="10"
+            android:entries="@array/longbreakLenght"
+            android:summary="@string/pref_longbreakTime_summary"
+            android:entryValues="@array/longbreakLenghtValues"
+            android:title="@string/pref_longbreakTime" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefDebug"
+            android:summary="@string/pref_debugMode_summary"
+            android:title="@string/pref_debugMode" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+</PreferenceScreen>
