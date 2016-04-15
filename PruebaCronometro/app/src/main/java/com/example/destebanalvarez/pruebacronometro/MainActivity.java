@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @SuppressLint("newapi")
-
     public class counterclass extends CountDownTimer{
         /**
          * @param millisInFuture    The number of millis in the future from the call
