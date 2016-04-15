@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button btn_startPomodoro;
@@ -28,9 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private Intent intentService, intentBroadcast;
 
     private boolean rest=false;
-    TextView reloj;
+    private TextView reloj;
+    private int valortimer=1500000;
 
     private int nPomodoros = 0;
+    private boolean isBreak = false;
     private boolean vibration, debugMode;
     private int longbreakTime, shortbreakTime;
 
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
-
+        intentService = new Intent(getBaseContext(), ServiceTimer.class);
 
         reloj=(TextView)findViewById(R.id.txt_timeLeft);
         btn_startPomodoro = (Button)findViewById(R.id.btn_startPomodoro);
@@ -80,7 +84,12 @@ public class MainActivity extends AppCompatActivity {
     private void updateGUI(Intent intent){
         if(intent.getExtras()!=null){
             long millisUntilFinished = intent.getLongExtra("countdown", 0);
-            Log.i(TAG, "Countdown seconds remaining: " +  millisUntilFinished / 1000);
+            Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished / 1000);
+            long millis = millisUntilFinished;
+            reloj.setText(String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
+            //reloj.setText(Long.toString(millisUntilFinished / 1000));
         }
         }
 
@@ -149,16 +158,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void iniciarPomodoro(){
-        intentService = new Intent(getBaseContext(), ServiceTimer.class);
         startService(new Intent(this, ServiceTimer.class));
         Log.v(TAG, "Start button");
-        intentService.putExtra("MILISECONDS", 15000);
-        intentService.putExtra("INTERVAL", 1000);
+
+        int interval = 60000;
+        int minutes = 25;
+
+        if(isBreak && nPomodoros%4 == 0) {
+            minutes = longbreakTime;
+        } else {
+            minutes = shortbreakTime;
+        }
+
+        interval = 60000;
+
+        if(debugMode) {
+            interval = 1000;
+        }
+
+        intentService.putExtra("MILISECONDS", minutes*60000);
+        intentService.putExtra("INTERVAL", interval);
         startService(intentService);
-        //reloj.setText(getString(ServiceTimer.hms,"0"));
         btn_startPomodoro.setText(R.string.stopPomodoro);
-        //rest=intentService.getExtras("timeof",false);
         nPomodoros++;
+
+
+
     }
 
     private void detenerPomodoro(){

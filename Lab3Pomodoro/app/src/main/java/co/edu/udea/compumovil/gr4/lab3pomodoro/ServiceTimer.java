@@ -53,19 +53,14 @@ public class ServiceTimer extends Service {
         // Let it continue running until it is stopped.
 
 
-        //int miliseconds = intent.getIntExtra("MILISECONDS", );
-        //int interval = intent.getIntExtra("INTERVAL",1000);
+        int miliseconds = intent.getIntExtra("MILISECONDS",0 );
+        int interval = intent.getIntExtra("INTERVAL",0);
 
-        timer = new CountDownTimer(1500000, 1000) {
+        timer = new CountDownTimer(miliseconds, interval) {
             @Override
             public void onTick(long millisUntilFinished) {
 
-                long millis = millisUntilFinished;
-                hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-                        TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                        TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 
-                Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished / 1000);
                 bi.putExtra("countdown", millisUntilFinished);
                 sendBroadcast(bi);
 
@@ -74,7 +69,7 @@ public class ServiceTimer extends Service {
 
             @Override
             public void onFinish() {
-                msj.putExtra("timeof", true);
+
                 Log.d("CronometroService", "time is up");
                 Log.i(TAG2, "Timer finished");
             }
