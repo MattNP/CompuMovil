@@ -27,7 +27,10 @@
         <service
             android:name=".ServiceTimer"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
+        <intent-filter>
+            <action android:name="co.udea.compumovil.custombroadcast"/>
+        </intent-filter>
 
     </application>
 

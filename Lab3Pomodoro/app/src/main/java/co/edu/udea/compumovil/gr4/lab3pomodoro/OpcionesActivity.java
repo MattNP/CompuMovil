@@ -7,6 +7,11 @@ import android.os.Bundle;
 
 public class OpcionesActivity extends PreferenceActivity {
 
+    final static String PREF_SHORTBREAK="prefShortbreak";
+    final static String PREF_LONGBREAK="prefLongbreak";
+    final static String PREF_VIBRATION="prefVibration";
+    final static String PREF_DEBUG="prefDebug";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -14,17 +14,25 @@ public class ServiceTimer extends Service {
 
     private final String TAG = "MyService";
 
-    private CountDownTimer timer;
+    public static CountDownTimer timer;
 
-
+    private final static String TAG2 = "BroadcastService";
+    public static final String COUNTDOWN_BR = "your_package_name.countdown_br";
 
     public final static String NOTIFICATION = "Notificación";
     public final static String FILEPATH = "Algún FilePath";
     public final static String RESULT = "Algún Result";
+    public static String hms;
+    public static Intent msj;
 
     public final String outputPath = "Algún Path de salida";
     public final String result = "Algún result";
 
+
+
+    Intent bi = new Intent(COUNTDOWN_BR);
+
+    CountDownTimer cdt = null;
 
     public ServiceTimer() {
     }
@@ -44,23 +52,31 @@ public class ServiceTimer extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Let it continue running until it is stopped.
 
-        int miliseconds = intent.getIntExtra("MILISECONDS", 10000);
-        int interval = intent.getIntExtra("INTERVAL",1000);
 
-        timer = new CountDownTimer(miliseconds, interval) {
+        //int miliseconds = intent.getIntExtra("MILISECONDS", );
+        //int interval = intent.getIntExtra("INTERVAL",1000);
+
+        timer = new CountDownTimer(1500000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+
                 long millis = millisUntilFinished;
-                String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
                         TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                         TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
+                Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished / 1000);
+                bi.putExtra("countdown", millisUntilFinished);
+                sendBroadcast(bi);
 
                 Log.d("CronometroService", "time: " + hms);
             }
 
             @Override
             public void onFinish() {
+                msj.putExtra("timeof", true);
                 Log.d("CronometroService", "time is up");
+                Log.i(TAG2, "Timer finished");
             }
         };
 
@@ -81,10 +97,12 @@ public class ServiceTimer extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i(TAG2, "Timer cancelled");
         timer.cancel();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
         Log.v(TAG, "onDestroy");
     }
+
 
 
 }

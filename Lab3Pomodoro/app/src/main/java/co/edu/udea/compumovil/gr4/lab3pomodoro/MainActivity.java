@@ -1,6 +1,9 @@
 package co.edu.udea.compumovil.gr4.lab3pomodoro;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String NSECONDS = "nSeconds";
     private final String TAG = "MyService";
     private Intent intentService, intentBroadcast;
+
+    private boolean rest=false;
+    TextView reloj;
 
     private int nPomodoros = 0;
     private boolean vibration, debugMode;
@@ -53,9 +62,57 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
 
-        intentService = new Intent(getBaseContext(), ServiceTimer.class);
 
+        reloj=(TextView)findViewById(R.id.txt_timeLeft);
         btn_startPomodoro = (Button)findViewById(R.id.btn_startPomodoro);
+
+
+
+    }
+
+    private BroadcastReceiver br=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateGUI(intent);
+        }
+    };
+
+    private void updateGUI(Intent intent){
+        if(intent.getExtras()!=null){
+            long millisUntilFinished = intent.getLongExtra("countdown", 0);
+            Log.i(TAG, "Countdown seconds remaining: " +  millisUntilFinished / 1000);
+        }
+        }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(br, new IntentFilter(ServiceTimer.COUNTDOWN_BR));
+        Log.i(TAG, "Registered broacast receiver");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(br);
+        Log.i(TAG, "Unregistered broacast receiver");
+    }
+
+    @Override
+    protected void onStop() {
+        try {
+            unregisterReceiver(br);
+        } catch (Exception e) {
+            // Receiver was probably already stopped in onPause()
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, ServiceTimer.class));
+        Log.i(TAG, "Stopped service");
+        super.onDestroy();
     }
 
     @Override
@@ -92,11 +149,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void iniciarPomodoro(){
+        intentService = new Intent(getBaseContext(), ServiceTimer.class);
+        startService(new Intent(this, ServiceTimer.class));
         Log.v(TAG, "Start button");
         intentService.putExtra("MILISECONDS", 15000);
         intentService.putExtra("INTERVAL", 1000);
         startService(intentService);
+        //reloj.setText(getString(ServiceTimer.hms,"0"));
         btn_startPomodoro.setText(R.string.stopPomodoro);
+        //rest=intentService.getExtras("timeof",false);
         nPomodoros++;
     }
 
@@ -104,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         Log.v(TAG, "Stop button");
         stopService(intentService);
         btn_startPomodoro.setText(R.string.startPomodoro);
+        ServiceTimer.timer.cancel();
         nPomodoros--;
     }
 
