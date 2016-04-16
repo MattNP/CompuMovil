@@ -19,4 +19,7 @@
     <string name="pref_debugMode">Modo Debug</string>
     <string name="pref_debugMode_summary">Mostrar el reloj en minutos o segundos</string>
 
+    <string name="notification_title">Se acabó el tiempo</string>
+    <string name="notification_information">Es hora de cambiar de actividad</string>
+
 </resources>

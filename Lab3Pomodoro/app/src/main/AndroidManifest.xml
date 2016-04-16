@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="co.edu.udea.compumovil.gr4.lab3pomodoro">
 
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,9 +30,6 @@
             android:name=".ServiceTimer"
             android:enabled="true"
             android:exported="true" />
-        <intent-filter>
-            <action android:name="co.udea.compumovil.custombroadcast"/>
-        </intent-filter>
 
     </application>
 

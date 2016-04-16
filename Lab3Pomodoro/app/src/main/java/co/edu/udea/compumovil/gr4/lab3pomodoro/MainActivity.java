@@ -15,48 +15,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btn_startPomodoro;
+
     private static final int RESULT_SETTINGS = 1;
-    private static final String NSECONDS = "nSeconds";
-    private final String TAG = "MyService";
-    private Intent intentService, intentBroadcast;
+    private final String TAG = "MainActivity";
+    private Intent intentService;
 
-    private boolean rest=false;
-    private TextView reloj;
-    private int valortimer=1500000;
+    private TextView txt_reloj;
+    private Button btn_startPomodoro;
 
-    private int nPomodoros = 0;
+    private int nPomodoros;
     private boolean isBreak = false;
     private boolean vibration, debugMode;
-    private int longbreakTime, shortbreakTime;
-
-//    private BroadcastReceiver receiver = new BroadcastReceiver() {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            Bundle bundle = intent.getExtras();
-//            if (bundle != null) {
-//                String string = bundle.getString(ServiceTimer.FILEPATH);
-//                int resultCode = bundle.getInt(ServiceTimer.RESULT);
-//                if (resultCode == RESULT_OK) {
-//                    Toast.makeText(MainActivity.this,
-//                            "Download complete. Download URI: " + string,
-//                            Toast.LENGTH_LONG).show();
-//                } else {
-//                    Toast.makeText(MainActivity.this, "Download failed",
-//                            Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        }
-//    };
+    private int longbreakTime, shortbreakTime, multiplier, minutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,33 +40,41 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
+        getUserPreferences();
         intentService = new Intent(getBaseContext(), ServiceTimer.class);
 
-        reloj=(TextView)findViewById(R.id.txt_timeLeft);
-        btn_startPomodoro = (Button)findViewById(R.id.btn_startPomodoro);
+        txt_reloj = (TextView) findViewById(R.id.txt_timeLeft);
+        btn_startPomodoro = (Button) findViewById(R.id.btn_startPomodoro);
 
-
-
+        nPomodoros = 0;
     }
 
-    private BroadcastReceiver br=new BroadcastReceiver() {
+    private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateGUI(intent);
         }
     };
 
-    private void updateGUI(Intent intent){
-        if(intent.getExtras()!=null){
-            long millisUntilFinished = intent.getLongExtra("countdown", 0);
-            Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished / 1000);
-            long millis = millisUntilFinished;
-            reloj.setText(String.format("%02d:%02d",
-                    TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
-            //reloj.setText(Long.toString(millisUntilFinished / 1000));
+    private void updateGUI(Intent intent) {
+        if (intent.getExtras() != null) {
+            if (intent.hasExtra(ServiceTimer.COUNTDOWN)) {
+                long millisUntilFinished = intent.getLongExtra(ServiceTimer.COUNTDOWN, 0);
+                Log.d(TAG, "Countdown seconds remaining: " + millisUntilFinished / 1000);
+                long millis = millisUntilFinished;
+                txt_reloj.setText(String.format("%02d:%02d",
+                        TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
+            }
+            if(intent.hasExtra(ServiceTimer.FINISH)) {
+                boolean timeUp = intent.getBooleanExtra(ServiceTimer.FINISH, false);
+                if(timeUp) {
+                    txt_reloj.setText("00:00");
+                    timeUp();
+                }
+            }
         }
-        }
+    }
 
     @Override
     protected void onResume() {
@@ -104,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(br);
-        Log.i(TAG, "Unregistered broacast receiver");
+        Log.d(TAG, "Unregistered broacast receiver");
     }
 
     @Override
@@ -120,78 +103,94 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         stopService(new Intent(this, ServiceTimer.class));
-        Log.i(TAG, "Stopped service");
+        Log.d(TAG, "Stopped service");
         super.onDestroy();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getUserPreferences();
-    }
-
-    private void getUserPreferences() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String sb = sharedPreferences.getString(OpcionesActivity.PREF_SHORTBREAK, "0");
-        String lb = sharedPreferences.getString(OpcionesActivity.PREF_LONGBREAK, "0");
-
-        vibration = sharedPreferences.getBoolean(OpcionesActivity.PREF_VIBRATION, true);
-        shortbreakTime = Integer.valueOf(sb);
-        longbreakTime = Integer.valueOf(lb);
-        debugMode = sharedPreferences.getBoolean(OpcionesActivity.PREF_DEBUG, false);
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_startPomodoro:
-                if(btn_startPomodoro.getText().toString().equals(getResources().getString(R.string.startPomodoro))) {
-                    //Botón dice "Iniciar Pomodoro"
-                    iniciarPomodoro();
+                if (buttonStart()) {
+                    //Botón dice "Iniciar..."
+                    iniciarTimer();
                 } else {
-                    //Botón dice "Detener Pomodoro"
-                    detenerPomodoro();
+                    //Botón dice "Detener..."
+                    detenerTimer();
                 }
-
                 break;
         }
     }
 
-    private void iniciarPomodoro(){
-        startService(new Intent(this, ServiceTimer.class));
-        Log.v(TAG, "Start button");
-
-        int interval = 60000;
-        int minutes = 25;
-
-        if(isBreak && nPomodoros%4 == 0) {
-            minutes = longbreakTime;
-        } else {
-            minutes = shortbreakTime;
-        }
-
-        interval = 60000;
-
-        if(debugMode) {
-            interval = 1000;
-        }
-
-        intentService.putExtra("MILISECONDS", minutes*60000);
-        intentService.putExtra("INTERVAL", interval);
-        startService(intentService);
-        btn_startPomodoro.setText(R.string.stopPomodoro);
-        nPomodoros++;
-
-
-
+    private boolean buttonStart() {
+        boolean startP = btn_startPomodoro.getText().toString().equals(getString(R.string.startPomodoro));
+        boolean startL = btn_startPomodoro.getText().toString().equals(getString(R.string.startLongbreak));
+        boolean startS = btn_startPomodoro.getText().toString().equals(getString(R.string.startShortbreak));
+        return startP || startL || startS;
     }
 
-    private void detenerPomodoro(){
-        Log.v(TAG, "Stop button");
+    private void iniciarTimer() {
+        Log.d(TAG, "Start button");
+
+        if (isBreak) {
+            if (nPomodoros % 4 == 0) {
+                minutes = longbreakTime;
+            } else {
+                minutes = shortbreakTime;
+            }
+        } else {
+            minutes = 25;
+        }
+
+        intentService.putExtra(ServiceTimer.MILLISECONDS, minutes * multiplier + 1000);
+        intentService.putExtra(ServiceTimer.INTERVAL, 1000);
+        intentService.putExtra(OpcionesActivity.PREF_VIBRATION, vibration);
+        startService(intentService);
+
+        updateButton(false);
+    }
+
+    private void timeUp() {
+
+        if(!isBreak) {
+            isBreak = true;
+            nPomodoros++;
+        } else {
+            isBreak = false;
+        }
+        updateButton(true);
+    }
+
+    private void updateButton(boolean iniciar) {
+
+        String textButton;
+        if (iniciar) {
+            if(isBreak) {
+                if (nPomodoros % 4 == 0) {
+                    textButton = getString(R.string.startLongbreak);
+                } else {
+                    textButton = getString(R.string.startShortbreak);
+                }
+            } else {
+                textButton = getString(R.string.startPomodoro);
+            }
+        } else {
+            if(isBreak) {
+                if (nPomodoros % 4 == 0) {
+                    textButton = getString(R.string.stopLongbreak);
+                } else {
+                    textButton = getString(R.string.stopShortbreak);
+                }
+            } else {
+                textButton = getString(R.string.stopPomodoro);
+            }
+        }
+        btn_startPomodoro.setText(textButton);
+    }
+
+    private void detenerTimer() {
+        Log.d(TAG, "Stop button");
         stopService(intentService);
-        btn_startPomodoro.setText(R.string.startPomodoro);
-        ServiceTimer.timer.cancel();
-        nPomodoros--;
+        updateButton(true);
     }
 
     @Override
@@ -210,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
-
         return true;
     }
 
@@ -220,8 +218,26 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case RESULT_SETTINGS:
+                getUserPreferences();
                 break;
         }
+    }
 
+    private void getUserPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String sb = sharedPreferences.getString(OpcionesActivity.PREF_SHORTBREAK, "0");
+        String lb = sharedPreferences.getString(OpcionesActivity.PREF_LONGBREAK, "0");
+
+        vibration = sharedPreferences.getBoolean(OpcionesActivity.PREF_VIBRATION, true);
+        shortbreakTime = Integer.valueOf(sb);
+        longbreakTime = Integer.valueOf(lb);
+        debugMode = sharedPreferences.getBoolean(OpcionesActivity.PREF_DEBUG, false);
+
+        multiplier = 60000;
+
+        if(debugMode) {
+            multiplier = 1000;
+        }
     }
 }
