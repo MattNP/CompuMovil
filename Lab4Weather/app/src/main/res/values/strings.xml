@@ -1,0 +1,181 @@
+<resources>
+    <string name="app_name">Lab4Weather</string>
+
+
+    <string name="ciudad">Ciudad (Capital)</string>
+    <string name="clima">Clima</string>
+
+
+    <string-array name="idCiudades">
+        <item>3041563</item>
+        <item>292968</item>
+        <item>1138958</item>
+        <item>3576022</item>
+        <item>3573374</item>
+        <item>3183875</item>
+        <item>616052</item>
+        <item>2240449</item>
+        <item>3435910</item>
+        <item>5881576</item>
+        <item>2761369</item>
+        <item>2172517</item>
+        <item>3577154</item>
+        <item>3191281</item>
+        <item>2075807</item>
+        <item>1185241</item>
+        <item>2800866</item>
+        <item>2357048</item>
+        <item>727011</item>
+        <item>290340</item>
+        <item>425378</item>
+        <item>2392087</item>
+        <item>3573197</item>
+        <item>1820906</item>
+        <item>3911925</item>
+        <item>3469058</item>
+        <item>3571824</item>
+        <item>1252416</item>
+        <item>933773</item>
+        <item>625144</item>
+        <item>3582672</item>
+        <item>6094817</item>
+        <item>7304591</item>
+        <item>2314302</item>
+        <item>2389853</item>
+        <item>2260535</item>
+        <item>2661552</item>
+        <item>2293538</item>
+        <item>4035715</item>
+        <item>3871336</item>
+        <item>2220957</item>
+        <item>1816670</item>
+        <item>3688689</item>
+        <item>3674962</item>
+        <item>3687925</item>
+        <item>3689147</item>
+        <item>3687238</item>
+        <item>3685533</item>
+        <item>3680656</item>
+        <item>3688465</item>
+        <item>3668605</item>
+        <item>3665900</item>
+        <item>3672486</item>
+        <item>3666304</item>
+        <item>3672778</item>
+        <item>3675443</item>
+        <item>3674453</item>
+        <item>3673899</item>
+        <item>3621841</item>
+        <item>3553478</item>
+        <item>3374333</item>
+        <item>2078127</item>
+        <item>146268</item>
+        <item>3067696</item>
+        <item>2950159</item>
+        <item>223817</item>
+        <item>2618425</item>
+        <item>3575635</item>
+        <item>3492908</item>
+        <item>2507480</item>
+        <item>3652462</item>
+        <item>588409</item>
+        <item>360630</item>
+        <item>2462881</item>
+        <item>343300</item>
+        <item>3117735</item>
+        <item>344979</item>
+        <item>658225</item>
+        <item>2198148</item>
+        <item>3426691</item>
+        <item>2081986</item>
+        <item>2611396</item>
+        <item>2988507</item>
+    </string-array>
+
+    <string-array name="ciudades">
+        <item>Andorra la Vella, Andorra</item>
+        <item>Abu Dhabi, Emiratos Árabes Unidos</item>
+        <item>Kabul, Afganistán</item>
+        <item>Saint Johns, Antigua y Barbuda</item>
+        <item>The Valley, Anguila</item>
+        <item>Tirana, Albania</item>
+        <item>Yerevan, Armenia</item>
+        <item>Luanda, Angola</item>
+        <item>Buenos Aires, Argentina</item>
+        <item>Pago Pago, Samoa Americana</item>
+        <item>Vienna, Austria</item>
+        <item>Canberra, Australia</item>
+        <item>Oranjestad, Aruba</item>
+        <item>Sarajevo, Bosnia y Hercegovina</item>
+        <item>Bridgetown, Australia</item>
+        <item>Dhaka, Bangladesh</item>
+        <item>Brussels, Bélgica</item>
+        <item>Ouagadougou, Burkina Faso</item>
+        <item>Sofia, Bulgaria</item>
+        <item>Manama, Bahráin</item>
+        <item>Bujumbura, Burundi</item>
+        <item>Porto-Novo, Benín</item>
+        <item>Hamilton, Bermudas</item>
+        <item>Bandar Seri Begawan, Brunéi</item>
+        <item>La Paz, Bolivia</item>
+        <item>Brasilia, Brasil</item>
+        <item>Nassau, Bahamas</item>
+        <item>Thimphu, Bután</item>
+        <item>Gaborone, Botsuana</item>
+        <item>Minsk, Bielorrusia</item>
+        <item>Belmopan, Belice</item>
+        <item>Ottawa, Canadá</item>
+        <item>West Island, Islas Cocos</item>
+        <item>Kinshasa, República Democrática del Cong</item>
+        <item>Bangui, República Centroafricana</item>
+        <item>Brazzaville, Congo</item>
+        <item>Bern, Suiza</item>
+        <item>Abidjan, Costa de Marfil</item>
+        <item>Avarua, Islas Cook</item>
+        <item>Santiago, Chile</item>
+        <item>Yaounde, Camerún</item>
+        <item>Beijing, China</item>
+        <item>Bogota, Colombia</item>
+        <item>Medellin, Colombia</item>
+        <item>Cali, Colombia</item>
+        <item>Barranquilla, Colombia</item>
+        <item>Cartagena, Colombia</item>
+        <item>Cucuta, Colombia</item>
+        <item>Ibague, Colombia</item>
+        <item>Bucaramanga, Colombia</item>
+        <item>Santa Marta, Colombia</item>
+        <item>Villavicencio, Colombia</item>
+        <item>Pereira, Colombia</item>
+        <item>Valledupar, Colombia</item>
+        <item>Pasto, Colombia</item>
+        <item>Manizales, Colombia</item>
+        <item>Monteria, Colombia</item>
+        <item>Neiva, Colombia</item>
+        <item>San Jose, Costa Rica</item>
+        <item>Havana, Cuba</item>
+        <item>Praia, Cabo Verde</item>
+        <item>Flying Fish Cove, Isla Christmas</item>
+        <item>Nicosia, Chipre</item>
+        <item>Prague, Chequia</item>
+        <item>Berlin, Alemania</item>
+        <item>Djibouti, Yibuti</item>
+        <item>Copenhagen, Dinamarca</item>
+        <item>Roseau, Dominica</item>
+        <item>Santo Domingo, República Dominicana</item>
+        <item>Algiers, Argelia</item>
+        <item>Quito, Ecuador</item>
+        <item>Tallinn, Estonia</item>
+        <item>Cairo, Egipto</item>
+        <item>Laayoune / El Aaiun, Sahara Occidental</item>
+        <item>Asmera, Eritrea</item>
+        <item>Madrid, España</item>
+        <item>Addis Ababa, Etiopía</item>
+        <item>Helsinki, Finlandia</item>
+        <item>Suva, Fiyi</item>
+        <item>Stanley, Islas Malvinas</item>
+        <item>Palikir - National Government Center, Micronesia</item>
+        <item>Torshavn, Islas Feroe</item>
+        <item>Paris, Francia</item>
+    </string-array>
+
+</resources>
