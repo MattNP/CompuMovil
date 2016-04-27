@@ -71,9 +71,6 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void sendRequest() {
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Fetching The File....");
-        progressDialog.show();
         queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -103,6 +100,9 @@ public class WeatherActivity extends AppCompatActivity {
                     }
                 });
         queue.add(jsObjRequest);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Fetching The File....");
+        progressDialog.show();
     }
 
     public void getImage(String icon) {
