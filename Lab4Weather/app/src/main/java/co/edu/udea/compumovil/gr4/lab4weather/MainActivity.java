@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr4.lab4weather;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private AutoCompleteTextView txt_ciudades;
     private Button btn_clima;
     private String ciudades[], idCiudades[];
+    public static String ID_CIUDAD = "idCiudad";
 
 
 
@@ -56,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
                 int index = Arrays.asList(ciudades).indexOf(txt_ciudades.getText().toString());
                 if(index != -1) {
                     String idCiudad = idCiudades[index];
-                    Toast.makeText(this, idCiudad, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, WeatherActivity.class);
+                    intent.putExtra(ID_CIUDAD, idCiudad);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(this, "La ciudad no se encuentra", Toast.LENGTH_SHORT).show();
                     txt_ciudades.setText("");

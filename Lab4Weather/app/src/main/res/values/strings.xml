@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Lab4Weather</string>
+    <string name="app_name">Weather4All</string>
 
 
     <string name="ciudad">Ciudad (Capital)</string>
     <string name="clima">Clima</string>
+    <string name="error">Ocurrió un error en la petición</string>
 
 
     <string-array name="idCiudades">
