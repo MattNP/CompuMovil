@@ -3,8 +3,9 @@
 
 
     <string name="ciudad">Ciudad (Capital)</string>
-    <string name="clima">Clima</string>
+    <string name="weatherData">Clima</string>
     <string name="error">Ocurrió un error en la petición</string>
+    <string name="idiomaAPI">es</string>
 
 
     <string-array name="idCiudades">
