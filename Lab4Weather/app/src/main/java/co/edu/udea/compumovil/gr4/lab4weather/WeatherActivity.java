@@ -1,9 +1,12 @@
 package co.edu.udea.compumovil.gr4.lab4weather;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -36,11 +39,26 @@ public class WeatherActivity extends AppCompatActivity {
     private Gson gson;
 
     ImageView img_weatherIcon;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+
+
+        // my_child_toolbar is defined in the layout file
+        Toolbar myChildToolbar =
+                (Toolbar) findViewById(R.id.appBarWeather);
+        setSupportActionBar(myChildToolbar);
+
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
+
         Intent intent = getIntent();
         String idCiudad = intent.getStringExtra(MainActivity.ID_CIUDAD);
         REQUEST = "/weather?id=" +  idCiudad + "&lang=" + getString(R.string.idiomaAPI) + "&units=metric";
@@ -52,6 +70,10 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void sendRequest() {
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Fetching The File....");
+        progressDialog.show();
         queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -67,15 +89,17 @@ public class WeatherActivity extends AppCompatActivity {
                             Log.d(TAG, "*weatherData: " + weatherData.getMain().getTemp());
                             showWeatherInfo();
                             Log.d(TAG, "weatherData != null");
-                        }
-                        else
+                        } else {
                             Log.d(TAG, "**weatherData is null " );
+                        }
+                        progressDialog.dismiss();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String myError = getString(R.string.error);
                         Toast.makeText(getBaseContext(), myError, Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 });
         queue.add(jsObjRequest);
