@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -40,6 +41,10 @@ public class WeatherActivity extends AppCompatActivity {
 
     ImageView img_weatherIcon;
     ProgressDialog progressDialog;
+    TextView txt_ciudad;
+    TextView txt_temperatura;
+    TextView txt_humedad;
+    TextView txt_descripcion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,11 @@ public class WeatherActivity extends AppCompatActivity {
         sendRequest();
 
         img_weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
+        txt_ciudad=(TextView) findViewById(R.id.txt_mostrar_ciudad);
+        txt_temperatura=(TextView) findViewById(R.id.txt_mostrar_temperatura);
+        txt_humedad=(TextView )findViewById(R.id.txt_mostrar_humedad);
+        txt_descripcion=(TextView )findViewById(R.id.txt_mostrar_descripcion);
+
     }
 
     private void sendRequest() {
@@ -120,11 +130,17 @@ public class WeatherActivity extends AppCompatActivity {
                         Log.d(TAG, "Error cargando la imagen");
                     }
                 });
-// Access the RequestQueue through your singleton class.
+        // Access the RequestQueue through your singleton class.
         queue.add(request);
     }
 
     private void showWeatherInfo() {
         getImage(weatherData.getWeather()[0].getIcon());
+        txt_ciudad.setText(weatherData.getName());
+        txt_descripcion.setText(weatherData.getWeather()[0].getDescription());
+        txt_temperatura.setText(Float.toString(weatherData.getMain().getTemp()));
+        txt_humedad.setText(Float.toString(weatherData.getMain().getHumidity()));
+
+
     }
 }

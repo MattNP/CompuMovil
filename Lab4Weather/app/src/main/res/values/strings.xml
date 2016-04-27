@@ -6,7 +6,10 @@
     <string name="weatherData">Clima</string>
     <string name="error">Ocurrió un error en la petición</string>
     <string name="idiomaAPI">es</string>
-
+    <string name="temperatura">Temperatura: </string>
+    <string name="humedad">Humedad: </string>
+    <string name="descripcion_clima">Descripcion: </string>
+    <string name="nombre_ciudad">Ciudad: </string>
 
     <string-array name="idCiudades">
         <item>3041563</item>
