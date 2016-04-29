@@ -66,16 +66,16 @@ public class WeatherActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String idCiudad = intent.getStringExtra(MainActivity.ID_CIUDAD);
-        REQUEST = "/weather?id=" +  idCiudad + "&lang=" + getString(R.string.idiomaAPI) + "&units=metric";
+        REQUEST = "/weather?id=" +  idCiudad + "&units=metric";
         URL = BASE_URL+REQUEST+APPID;
         Log.d("URL: ", URL);
         sendRequest();
 
         img_weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
-        txt_ciudad=(TextView) findViewById(R.id.txt_mostrar_ciudad);
-        txt_temperatura=(TextView) findViewById(R.id.txt_mostrar_temperatura);
-        txt_humedad=(TextView )findViewById(R.id.txt_mostrar_humedad);
-        txt_descripcion=(TextView )findViewById(R.id.txt_mostrar_descripcion);
+        txt_ciudad=(TextView) findViewById(R.id.txt_ciudad);
+        txt_temperatura=(TextView) findViewById(R.id.txt_temperatura);
+        txt_humedad=(TextView )findViewById(R.id.txt_humedad);
+        txt_descripcion=(TextView )findViewById(R.id.txt_descripcion);
 
     }
 
@@ -124,7 +124,7 @@ public class WeatherActivity extends AppCompatActivity {
                     public void onResponse(Bitmap bitmap) {
                         img_weatherIcon.setImageBitmap(bitmap);
                     }
-                }, 0, 0, null, Bitmap.Config.RGB_565,
+                }, 50, 50, null, Bitmap.Config.RGB_565,
                 new Response.ErrorListener() {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "Error cargando la imagen");
