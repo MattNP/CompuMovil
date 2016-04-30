@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             if (cursor.moveToFirst()) {
 
                 SharedPreferences sharedPref = getSharedPreferences(PREF_USUARIO, MODE_PRIVATE);
+
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
                 editor.putInt(ID_USUARIO, cursor.getInt(cursor.getColumnIndex(CarrerasContract.ColumnaUsuario.ID)));

@@ -1,9 +1,12 @@
 package co.edu.udea.compumovil.gr4.lab4weather;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -20,8 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AutoCompleteTextView txt_ciudades;
     private Button btn_clima;
-    private String ciudades[], idCiudades[];
+    private String ciudades[], idCiudades[], idCiudad;
     public static String ID_CIUDAD = "idCiudad";
+    public static final String PREF_USUARIO="pref_usuario";
 
 
 
@@ -35,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
 
         ciudades = getResources().getStringArray(R.array.ciudades);
         idCiudades = getResources().getStringArray(R.array.idCiudades);
+
+        SharedPreferences sharedPref = getSharedPreferences(PREF_USUARIO, Context.MODE_PRIVATE);
+        idCiudad = sharedPref.getString(ID_CIUDAD, "0");
+        Log.d("MainActivity_onCreate", "ID city = " + idCiudad);
+
+        if(!idCiudad.equals("0")) {
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, ciudades);
@@ -62,9 +76,16 @@ public class MainActivity extends AppCompatActivity {
                 int index = Arrays.asList(ciudades).indexOf(txt_ciudades.getText().toString());
                 if(index != -1) {
                     String idCiudad = idCiudades[index];
+                    SharedPreferences sharedPref = getSharedPreferences(PREF_USUARIO, MODE_PRIVATE);
+
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.clear();
+                    editor.putString(ID_CIUDAD, idCiudad);
+                    editor.commit();
+
                     Intent intent = new Intent(this, WeatherActivity.class);
-                    intent.putExtra(ID_CIUDAD, idCiudad);
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(this, "La ciudad no se encuentra", Toast.LENGTH_SHORT).show();
                     txt_ciudades.setText("");
