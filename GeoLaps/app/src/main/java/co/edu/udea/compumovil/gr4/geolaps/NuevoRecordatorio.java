@@ -11,6 +11,8 @@ import android.widget.Button;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
 
 public class NuevoRecordatorio extends AppCompatActivity {
 
@@ -25,7 +27,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
         SupportMapFragment mymap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.Mapas);
         mapas = mymap.getMap();
 
-        mapas.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mapas.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -36,8 +38,11 @@ public class NuevoRecordatorio extends AppCompatActivity {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             mapas.setMyLocationEnabled(true);
-        }
 
+
+        }
+        mapas.getUiSettings().setZoomControlsEnabled(true);
+        
 
     }
     public void onClick(View view){
