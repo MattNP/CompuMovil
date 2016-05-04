@@ -54,8 +54,18 @@
         android:layout_height="wrap_content"
         android:text="@string/Registrar"
         android:id="@+id/btn_registro"
+        android:layout_marginTop="70dp"
         android:layout_below="@+id/txt_clave2Registro"
-        android:layout_alignRight="@+id/txt_nombreRegistro"
-        android:layout_alignEnd="@+id/txt_nombreRegistro"
-        android:layout_marginTop="72dp" />
+        android:layout_alignLeft="@+id/txt_clave2Registro"
+        android:layout_alignStart="@+id/txt_clave2Registro" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_sing_in_Google"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:layout_alignTop="@+id/btn_registro"
+        android:layout_toRightOf="@+id/txt_nombreRegistro"
+        android:layout_toEndOf="@+id/txt_nombreRegistro" />
+
 </RelativeLayout>
