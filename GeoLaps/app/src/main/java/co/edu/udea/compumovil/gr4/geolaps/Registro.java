@@ -35,7 +35,7 @@ public class Registro extends AppCompatActivity implements GoogleApiClient.OnCon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-        entrar=(Button)findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.btn_sing_in_Google).setOnClickListener(this);
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -46,7 +46,7 @@ public class Registro extends AppCompatActivity implements GoogleApiClient.OnCon
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        SignInButton signInButton = (SignInButton) findViewById(R.id.btn_sing_in_Google);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(googleSignInOptions.getScopeArray());
     }
@@ -54,7 +54,7 @@ public class Registro extends AppCompatActivity implements GoogleApiClient.OnCon
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sign_in_button:
+            case R.id.btn_sing_in_Google:
                 signIn();
                 break;
            /* case R.id.sign_out_button:
@@ -94,7 +94,7 @@ public class Registro extends AppCompatActivity implements GoogleApiClient.OnCon
         if (result.isSuccess()) {
 
             GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            mStatusTextView.setText(getString(R.string.signed_in_fmt)+ acct.getDisplayName());
             updateUI(true);
         } else {
 
@@ -107,13 +107,13 @@ public class Registro extends AppCompatActivity implements GoogleApiClient.OnCon
     }
     private void updateUI(boolean signedIn) {
         if (signedIn) {
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            findViewById(R.id.btn_sing_in_Google).setVisibility(View.GONE);
+           // findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
-            mStatusTextView.setText(R.string.signed_out);
+            //mStatusTextView.setText(R.string.signed_out);
 
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            findViewById(R.id.btn_sing_in_Google).setVisibility(View.VISIBLE);
+            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
     private void showProgressDialog() {
