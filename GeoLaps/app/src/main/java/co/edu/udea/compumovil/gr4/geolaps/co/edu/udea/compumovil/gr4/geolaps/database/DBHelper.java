@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr4.geolaps;
+package co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -118,6 +118,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "onCreate with SQL: " + sqlRecordatorio);
         db.execSQL(sqlRecordatorio);
+
+        String sqlAddTiposRecordatorio = String.format("INSERT INTO %s VALUES (%s);\n" +
+                "INSERT INTO %s VALUES (%s);\n" +
+                "INSERT INTO %s VALUES (%s);\n" +
+                "INSERT INTO %s VALUES (%s);\n",
+                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Diversión",
+                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Tipo2",
+                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Tipo3",
+                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Tipo4");
+
     }
 
     @Override
