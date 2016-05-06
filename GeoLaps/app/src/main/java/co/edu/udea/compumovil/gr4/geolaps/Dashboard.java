@@ -41,6 +41,7 @@ import java.util.List;
 import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
 import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
+import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -56,7 +57,10 @@ public class Dashboard extends AppCompatActivity
     private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
-    private List<Lugar> lugares;
+    private List<Recordatorio> recordatoriosActivos;
+
+    private DBHelper dbHelper = new DBHelper(this);
+    private SQLiteDatabase db = dbHelper.getWritableDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +107,14 @@ public class Dashboard extends AppCompatActivity
                 .findFragmentById(R.id.fragment_mapa);
         mapFragment.getMapAsync(this);
 
-        lugares = getLugares();
+        recordatoriosActivos = getRecordatoriosActivos();
 
     }
 
     private void ubicarMarcadores() {
         mMap.clear();
-        for(Lugar lugar : lugares) {
+        for(Recordatorio recordatorio : recordatoriosActivos) {
+            Lugar lugar = recordatorio.getLugar();
             LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
             Log.d("ubicarMarcadores", "lat: " + lugar.getLatitud() + " lng: + " + lugar.getLongitud());
             mMap.addMarker(new MarkerOptions().position(latLng));
@@ -117,13 +122,11 @@ public class Dashboard extends AppCompatActivity
         }
     }
 
-    public List<Lugar> getLugares() {
+    public List<Recordatorio> getRecordatoriosActivos() {
 
-        lugares = new ArrayList<>();
+        recordatoriosActivos = new ArrayList<>();
 
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.query(GeoLapsContract.TABLE_LUGAR,
+        Cursor cursorRecordatorios = db.query(GeoLapsContract.TABLE_RECORDATORIO,
                 null,
                 null,
                 null,
@@ -131,27 +134,57 @@ public class Dashboard extends AppCompatActivity
                 null,
                 null);
 
-        Log.d("getLugares", Integer.toString(cursor.getCount()));
+        Log.d("getRecordatorio", Integer.toString(cursorRecordatorios.getCount()));
 
-        if (cursor.moveToFirst()) {
+        if(cursorRecordatorios.moveToFirst()) {
             do {
-                Lugar lugar = new Lugar();
-                lugar.setId(Integer.toString(cursor.getInt(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.ID))));
-                lugar.setTipo(Integer.toString(cursor.getInt(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.TIPO))));
-                lugar.setNombre(cursor.getString(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.NOMBRE)));
-                lugar.setLatitud(cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
-                double lat = (cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
-                Log.d("getLugares", "lat: " + lat);
-                lugar.setLongitud(cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD)));
-                double lng = cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD));
-                Log.d("getLugares", "log: " + lng);
+                Recordatorio recordatorio = new Recordatorio();
+                recordatorio.setId(cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.ID)));
+                recordatorio.setUid(cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.UID)));
+                recordatorio.setTipo(cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.TIPO)));
 
-                lugares.add(lugar);
+                int lugarId = cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.LUGAR));
+                recordatorio.setLugar(getLugar(lugarId));
 
-            } while (cursor.moveToNext());
+                recordatorio.setNombre(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.NOMBRE)));
+                recordatorio.setFecha_limite(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.FECHA_LIMITE)));
+                recordatorio.setHora_limite(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.HORA_LIMITE)));
+                recordatorio.setTimestamp(cursorRecordatorios.getLong(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.TIMESTAMP)));
+                recordatorio.setDescripcion(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.DESCRIPCION)));
+
+            } while(cursorRecordatorios.moveToNext());
         }
 
-        return lugares;
+        return recordatoriosActivos;
+    }
+
+    public Lugar getLugar(int id) {
+
+        Lugar lugar = new Lugar();
+
+        Cursor cursorLugar = db.query(GeoLapsContract.TABLE_LUGAR,
+                null,
+                GeoLapsContract.ColumnaLugar.ID + "=?",
+                new String[] {Integer.toString(id)},
+                null,
+                null,
+                null);
+
+        Log.d("getRecordatorio", Integer.toString(cursorLugar.getCount()));
+
+        if (cursorLugar.moveToFirst()) {
+            lugar.setId(cursorLugar.getInt(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.ID)));
+            lugar.setTipo(Integer.toString(cursorLugar.getInt(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.TIPO))));
+            lugar.setNombre(cursorLugar.getString(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.NOMBRE)));
+            lugar.setLatitud(cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
+            double lat = (cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
+            Log.d("getLugares", "lat: " + lat);
+            lugar.setLongitud(cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD)));
+            double lng = cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD));
+            Log.d("getLugares", "log: " + lng);
+        }
+
+        return lugar;
     }
 
     @Override
