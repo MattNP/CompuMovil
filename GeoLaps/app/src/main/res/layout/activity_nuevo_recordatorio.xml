@@ -70,12 +70,26 @@
                 android:paddingTop="16dp"
                 android:layout_below="@id/spinner_tipo_lugar"/>
 
-            <EditText
-                android:layout_width="match_parent"
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/img_mapa"
+                android:onClick="onClick"
+                android:background="@color/accent"
+                android:src="@android:drawable/ic_menu_mapmode"
+                android:layout_below="@+id/lugar"
+                android:layout_alignParentRight="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/lugar"
                 android:id="@+id/txt_lugar"
-                android:hint="@string/LatLng"/>
+                android:layout_toStartOf="@id/img_mapa"
+                android:hint="@string/LatLng"
+                android:layout_toLeftOf="@id/img_mapa"
+                android:layout_alignParentLeft="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -96,7 +110,7 @@
                 android:hint="@string/ddmmaa"
                 android:clickable="true"
                 android:id="@+id/txt_fecha"
-                android:onClick="dialogFecha"
+                android:onClick="onClick"
                 android:layout_below="@+id/fecha"/>
 
             <TextView
@@ -114,12 +128,12 @@
                 android:background="?attr/editTextBackground"
                 android:gravity="center_vertical"
                 android:textAppearance="?android:attr/textAppearanceMediumInverse"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/hhmm"
                 android:clickable="true"
                 android:id="@+id/txt_hora"
-                android:onClick="dialogFecha"
+                android:onClick="onClick"
                 android:layout_below="@+id/hora"
                 android:layout_alignLeft="@+id/hora"
                 android:layout_alignStart="@+id/hora"/>
@@ -143,7 +157,4 @@
         </RelativeLayout>
 
     </ScrollView>
-
-
-
 </LinearLayout>

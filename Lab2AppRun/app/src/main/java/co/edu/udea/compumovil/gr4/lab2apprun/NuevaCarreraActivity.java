@@ -60,7 +60,7 @@ public class NuevaCarreraActivity extends AppCompatActivity {
                 dbHelper.close();
 
 
-                Toast.makeText(this, "Guardar carrera", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.carrera_guardada), Toast.LENGTH_SHORT).show();
                 finish();
 
                 break;

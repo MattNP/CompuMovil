@@ -18,7 +18,7 @@
     <string name="lugar">Lugar</string>
 
     <string name="action_settings">Opciones</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Escoge un lugar</string>
 
     <string name="sign_out">sign out</string>
     <string name="signed_out">signed out</string>
@@ -38,5 +38,7 @@
     <string name="ddmmaa">dd-mm-aaaa</string>
     <string name="hora">Hora límite</string>
     <string name="hhmm">hh:mm</string>
+    <string name="campos_incompletos">El título y el lugar son obligatorios</string>
+    <string name="recordatorio_guardado">Recordatorio guardado</string>
 
 </resources>

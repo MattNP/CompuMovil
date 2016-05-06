@@ -4,11 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -36,6 +35,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
+import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
+import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
+
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -50,6 +56,7 @@ public class Dashboard extends AppCompatActivity
     private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
+    private List<Lugar> lugares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,55 @@ public class Dashboard extends AppCompatActivity
                 .findFragmentById(R.id.fragment_mapa);
         mapFragment.getMapAsync(this);
 
+        lugares = getLugares();
+
+    }
+
+    private void ubicarMarcadores() {
+        mMap.clear();
+        for(Lugar lugar : lugares) {
+            LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
+            Log.d("ubicarMarcadores", "lat: " + lugar.getLatitud() + " lng: + " + lugar.getLongitud());
+            mMap.addMarker(new MarkerOptions().position(latLng));
+            Log.d("ubicarMarcadores", lugar.getNombre());
+        }
+    }
+
+    public List<Lugar> getLugares() {
+
+        lugares = new ArrayList<>();
+
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query(GeoLapsContract.TABLE_LUGAR,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        Log.d("getLugares", Integer.toString(cursor.getCount()));
+
+        if (cursor.moveToFirst()) {
+            do {
+                Lugar lugar = new Lugar();
+                lugar.setId(Integer.toString(cursor.getInt(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.ID))));
+                lugar.setTipo(Integer.toString(cursor.getInt(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.TIPO))));
+                lugar.setNombre(cursor.getString(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.NOMBRE)));
+                lugar.setLatitud(cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
+                double lat = (cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
+                Log.d("getLugares", "lat: " + lat);
+                lugar.setLongitud(cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD)));
+                double lng = cursor.getDouble(cursor.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD));
+                Log.d("getLugares", "log: " + lng);
+
+                lugares.add(lugar);
+
+            } while (cursor.moveToNext());
+        }
+
+        return lugares;
     }
 
     @Override
@@ -115,15 +171,12 @@ public class Dashboard extends AppCompatActivity
             public void onMapClick(LatLng point) {
                 // TODO Auto-generated method stub
                 //lstLatLngs.add(point);
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(point));
+                //mMap.clear();
+                //mMap.addMarker(new MarkerOptions().position(point));
             }
         });
 
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=1600 Amphitheatre Parkway, Mountain+View, California");
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        startActivity(mapIntent);
+        ubicarMarcadores();
 
     }
 
@@ -155,13 +208,6 @@ public class Dashboard extends AppCompatActivity
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -170,24 +216,18 @@ public class Dashboard extends AppCompatActivity
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
         } else {
-            //If everything went fine lets get latitude and longitude
+
+
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
 
-            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
-
-            mMap.clear();
-
+            //mMap.clear();
             MarkerOptions mp = new MarkerOptions();
-
             mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
-
-            mp.title("my position");
-
-            mMap.addMarker(mp);
-
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()), 16));
+            mp.title("onConnected");
+            //mMap.addMarker(mp);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 13));
         }
     }
 
@@ -237,15 +277,15 @@ public class Dashboard extends AppCompatActivity
 
         Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
 
-        mMap.clear();
+        //mMap.clear();
 
         MarkerOptions mp = new MarkerOptions();
 
         mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
 
-        mp.title("my position");
+        mp.title("onLocationChanged");
 
-        mMap.addMarker(mp);
+        //mMap.addMarker(mp);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(), location.getLongitude()), 16));

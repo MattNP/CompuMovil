@@ -1,9 +1,14 @@
 package co.edu.udea.compumovil.gr4.geolaps;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,9 +19,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.jar.Manifest;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    public static final String LATITUD = "lat";
+    public static final String LONGITUD = "lon";
 
     private GoogleMap mMap;
+    private double lat;
+    private double lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +58,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
+        //Debe ser la ubicación actual del usuario
+
+        LatLng latLng = new LatLng(6.267981, -75.568040);
+        mMap.addMarker(new MarkerOptions().position(latLng));
+
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(0, 0);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+                // TODO Auto-generated method stub
+                //lstLatLngs.add(point);
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(point));
+                lat = point.latitude;
+                lng = point.longitude;
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.nuevo_recordatorio_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.guardarRecordatorio:
+                guardarMarcador();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void guardarMarcador() {
+        Intent intent = new Intent();
+        intent.putExtra(LATITUD, lat);
+        intent.putExtra(LONGITUD, lng);
+        setResult(NuevoRecordatorio.REQUEST_MAP, intent);
+        finish();
     }
 }

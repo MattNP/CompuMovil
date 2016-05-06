@@ -33,8 +33,8 @@ public class GeoLapsContract {
         public static final String NOMBRE = "nombre";
         public static final String FECHA_LIMITE = "fecha_limite";
         public static final String HORA_LIMITE = "hora_limite";
-        public static final String FECHA_CREACION = "fecha_creacion";
-        public static final String NOTA = "nota";
+        public static final String TIMESTAMP = "timestamp";
+        public static final String DESCRIPCION = "descripcion";
     }
 
     public class ColumnaTipoRecordatorio {

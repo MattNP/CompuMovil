@@ -31,5 +31,6 @@
     <string name="telefonoCarrera">Teléfono de contacto</string>
     <string name="correoCarrera">Correo de contacto</string>
     <string name="guardarCarrera">Guardar carrera</string>
+    <string name="carrera_guardada">Recordatorio guardado</string>
 
 </resources>
