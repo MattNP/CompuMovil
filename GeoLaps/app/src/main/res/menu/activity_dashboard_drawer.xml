@@ -3,13 +3,14 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/perfil_usuario"
-            android:icon="@android:drawable/ic_menu_crop"
-            android:title="perfil usuario" />
-        <item
             android:id="@+id/my_place"
             android:icon="@drawable/ic_menu_location"
-            android:title="mis recordatorios" />
+            android:title="@string/recordatorios" />
+        <item
+            android:id="@+id/perfil_usuario"
+            android:icon="@android:drawable/ic_menu_crop"
+            android:title="@string/perfil_usuario" />
+
 
     </group>
 

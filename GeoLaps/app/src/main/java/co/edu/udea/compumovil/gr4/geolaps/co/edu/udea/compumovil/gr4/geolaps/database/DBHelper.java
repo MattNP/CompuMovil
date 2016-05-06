@@ -57,6 +57,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate with SQL: " + sqlTipoRecordatorio);
         db.execSQL(sqlTipoRecordatorio);
 
+        /* Lugar con todos los datos completos
+
         String sqlLugar = String.format("create table %s " +
                         "(%s integer primary key autoincrement, " +
                         "%s integer, " +
@@ -81,6 +83,28 @@ public class DBHelper extends SQLiteOpenHelper {
                 GeoLapsContract.ColumnaLugar.TIPO,
                 GeoLapsContract.TABLE_TIPO_LUGAR,
                 GeoLapsContract.ColumnaTipoLugar.ID);
+
+                */
+
+        String sqlLugar = String.format("create table %s " +
+                        "(%s integer primary key autoincrement, " +
+                        "%s integer, " +
+                        "%s text, " +
+                        "%s double, " +
+                        "%s double, " +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s))",
+                GeoLapsContract.TABLE_LUGAR,
+                GeoLapsContract.ColumnaLugar.ID,
+                GeoLapsContract.ColumnaLugar.TIPO,
+                GeoLapsContract.ColumnaLugar.NOMBRE,
+                GeoLapsContract.ColumnaLugar.LATITUD,
+                GeoLapsContract.ColumnaLugar.LONGITUD,
+                GeoLapsContract.ColumnaLugar.TIPO,
+                GeoLapsContract.TABLE_TIPO_LUGAR,
+                GeoLapsContract.ColumnaTipoLugar.ID);
+
+        Log.d(TAG, "onCreate with SQL: " + sqlLugar);
+        db.execSQL(sqlLugar);
 
         String sqlRecordatorio = String.format("" +
                         "create table %s " +
@@ -119,15 +143,51 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate with SQL: " + sqlRecordatorio);
         db.execSQL(sqlRecordatorio);
 
-        String sqlAddTiposRecordatorio = String.format("INSERT INTO %s VALUES (%s);\n" +
-                "INSERT INTO %s VALUES (%s);\n" +
-                "INSERT INTO %s VALUES (%s);\n" +
-                "INSERT INTO %s VALUES (%s);\n",
-                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Diversión",
-                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Tipo2",
-                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Tipo3",
-                GeoLapsContract.TABLE_TIPO_RECORDATORIO, "Tipo4");
+        String sqlAddTiposRecordatorio = String.format("INSERT INTO '%s' (%s) " +
+                "SELECT '%s' AS '%s' " +
+                "UNION ALL SELECT '%s' " +
+                "UNION ALL SELECT '%s' " +
+                "UNION ALL SELECT '%s' ",
+                GeoLapsContract.TABLE_TIPO_RECORDATORIO,
+                GeoLapsContract.ColumnaTipoRecordatorio.TIPO,
+                "Diligencia",
+                GeoLapsContract.ColumnaTipoRecordatorio.TIPO,
+                "Compra",
+                "Entretenimiento",
+                "Otro");
 
+        Log.d(TAG, "Insert with SQL: " + sqlAddTiposRecordatorio);
+        db.execSQL(sqlAddTiposRecordatorio);
+
+        String sqlAddTiposLugares = String.format("INSERT INTO '%s' " +
+                        "(%s) " +
+                        "SELECT '%s' " +
+                        "AS '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' " +
+                        "UNION ALL SELECT '%s' ",
+                GeoLapsContract.TABLE_TIPO_LUGAR,
+                GeoLapsContract.ColumnaTipoLugar.TIPO,
+                "Notaria",
+                GeoLapsContract.ColumnaTipoRecordatorio.TIPO,
+                "Banco",
+                "Centro de salud",
+                "Supermercado",
+                "Tienda",
+                "Sala de cine",
+                "Centro comercial",
+                "Parque",
+                "Restaurante",
+                "Otro");
+
+        Log.d(TAG, "Insert with SQL: " + sqlAddTiposLugares);
+        db.execSQL(sqlAddTiposLugares);
     }
 
     @Override

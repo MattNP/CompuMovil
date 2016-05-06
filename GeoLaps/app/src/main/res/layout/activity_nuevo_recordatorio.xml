@@ -6,22 +6,6 @@
     tools:context=".NuevoRecordatorio"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.0"
-        tools:context=".Login"
-        android:orientation="vertical">
-        
-        <fragment
-            android:id="@+id/Mapas"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            tools:layout="@layout/activity_maps" />
-
-    </LinearLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,13 +21,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nombre_recordatorio"
-                android:id="@+id/txt_nombreRecordatorio"
+                android:id="@+id/nombreRecordatorio"
                 android:textColor="@color/primary_text"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txt_nombreRecordatorio"
+                android:layout_below="@id/nombreRecordatorio"
                 android:id="@+id/txt_titulo_recordatorio"
                 android:hint="@string/ej_pagar_factura"/>
 
@@ -57,17 +41,106 @@
                 android:layout_below="@id/txt_titulo_recordatorio"/>
 
             <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_tipo_recordatorio"
+                android:layout_below="@+id/txt_tipo_recordatorio" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txt_tipo_recordatorio"/>
+                android:text="@string/tipo_de_lugar"
+                android:id="@+id/txt_tipo_lugar"
+                android:textColor="@color/primary_text"
+                android:paddingTop="16dp"
+                android:layout_below="@id/spinner_tipo_recordatorio"/>
 
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_tipo_lugar"
+                android:layout_below="@+id/txt_tipo_lugar" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lugar"
+                android:id="@+id/lugar"
+                android:textColor="@color/primary_text"
+                android:paddingTop="16dp"
+                android:layout_below="@id/spinner_tipo_lugar"/>
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lugar"
+                android:id="@+id/txt_lugar"
+                android:hint="@string/LatLng"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fecha"
+                android:id="@+id/fecha"
+                android:textColor="@color/primary_text"
+                android:paddingTop="16dp"
+                android:layout_below="@id/txt_lugar"/>
+
+            <TextView
+                android:textColor="?attr/editTextColor"
+                android:background="?attr/editTextBackground"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/ddmmaa"
+                android:clickable="true"
+                android:id="@+id/txt_fecha"
+                android:onClick="dialogFecha"
+                android:layout_below="@+id/fecha"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hora"
+                android:id="@+id/hora"
+                android:textColor="@color/primary_text"
+                android:paddingTop="16dp"
+                android:layout_above="@+id/txt_fecha"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:textColor="?attr/editTextColor"
+                android:background="?attr/editTextBackground"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hhmm"
+                android:clickable="true"
+                android:id="@+id/txt_hora"
+                android:onClick="dialogFecha"
+                android:layout_below="@+id/hora"
+                android:layout_alignLeft="@+id/hora"
+                android:layout_alignStart="@+id/hora"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/descripcion"
+                android:id="@+id/descripcion"
+                android:textColor="@color/primary_text"
+                android:paddingTop="16dp"
+                android:layout_below="@id/txt_hora"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/descripcion"
+                android:id="@+id/txt_descripcion"
+                android:hint="@string/opcional"/>
 
         </RelativeLayout>
-
-
-
 
     </ScrollView>
 

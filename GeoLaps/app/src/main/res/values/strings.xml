@@ -28,6 +28,15 @@
     <string name="nombre_recordatorio">Nombre del recordatorio</string>
     <string name="ej_pagar_factura">Ej: "Pagar factura"</string>
     <string name="tipo_de_recordatorio">Tipo de recordatorio</string>
+    <string name="perfil_usuario">Mi perfil</string>
+    <string name="recordatorios">Recordatorios</string>
+    <string name="tipo_de_lugar">Tipo de lugar</string>
+    <string name="descripcion">Descripción</string>
+    <string name="opcional">Opcional</string>
+    <string name="LatLng">LatLng(Prueba)</string>
+    <string name="fecha">Fecha límite</string>
+    <string name="ddmmaa">dd-mm-aaaa</string>
+    <string name="hora">Hora límite</string>
+    <string name="hhmm">hh:mm</string>
 
-    <string-array name="tipos_recordatorio"></string-array>
 </resources>
