@@ -38,10 +38,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
-import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
-import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
-import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
+import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
+import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
+import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
+import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -59,8 +59,8 @@ public class Dashboard extends AppCompatActivity
     private double currentLongitude;
     private List<Recordatorio> recordatoriosActivos;
 
-    private DBHelper dbHelper = new DBHelper(this);
-    private SQLiteDatabase db = dbHelper.getWritableDatabase();
+    private DBHelper dbHelper;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,9 @@ public class Dashboard extends AppCompatActivity
         setContentView(R.layout.drawer_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        dbHelper = new DBHelper(this);
+        db = dbHelper.getWritableDatabase();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -367,7 +370,7 @@ public class Dashboard extends AppCompatActivity
 
         if (id == R.id.perfil_usuario) {
 
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
 
