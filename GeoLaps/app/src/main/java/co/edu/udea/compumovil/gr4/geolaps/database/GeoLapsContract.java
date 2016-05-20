@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database;
+package co.edu.udea.compumovil.gr4.geolaps.database;
 
 import android.provider.BaseColumns;
 

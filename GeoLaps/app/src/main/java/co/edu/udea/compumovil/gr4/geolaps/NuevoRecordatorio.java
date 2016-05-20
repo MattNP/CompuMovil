@@ -21,10 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
-import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
-import co.edu.udea.compumovil.gr4.geolaps.co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
+import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
+import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 
 public class NuevoRecordatorio extends AppCompatActivity {
 
