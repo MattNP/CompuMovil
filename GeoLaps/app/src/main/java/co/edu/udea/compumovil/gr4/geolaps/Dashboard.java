@@ -367,6 +367,10 @@ public class Dashboard extends AppCompatActivity
 
         if (id == R.id.perfil_usuario) {
 
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+            finish();
+
         } else if (id == R.id.my_place) {
 
         }
