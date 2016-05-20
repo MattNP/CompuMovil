@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -157,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         final String user = txt_user.getText().toString();
         final String email = txt_clave.getText().toString();
 
-        String url = "http://192.168.1.110:3000/api/GCMUsers";
+        String url = "http://geolapsserver-sergiomarriaga.c9users.io:8080/api/datos";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
@@ -185,7 +186,13 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("gcmid", regid);
 
                 return params;
+            }   @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
             }
+
         };
         queue.add(postRequest);
 
