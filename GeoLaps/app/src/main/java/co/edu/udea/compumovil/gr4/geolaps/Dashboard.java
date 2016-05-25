@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -48,7 +49,8 @@ public class Dashboard extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback,
+        RecordatorioFragment.OnListFragmentInteractionListener{
 
     private GoogleMap mMap;
 
@@ -111,6 +113,9 @@ public class Dashboard extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         recordatoriosActivos = getRecordatoriosActivos();
+
+        Fragment fragment = new RecordatorioFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,fragment).commit();
 
     }
 
@@ -383,4 +388,8 @@ public class Dashboard extends AppCompatActivity
     }
 
 
+    @Override
+    public void onListFragmentInteraction(Recordatorio item) {
+        Toast.makeText(this, "Presionó un recordatorio", Toast.LENGTH_SHORT).show();
+    }
 }

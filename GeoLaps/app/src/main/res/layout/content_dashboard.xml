@@ -35,7 +35,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1.0"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:id="@+id/recordatoriosContent">
     </ScrollView>
 
 </LinearLayout>
