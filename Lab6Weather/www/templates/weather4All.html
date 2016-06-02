@@ -1,0 +1,22 @@
+<ion-view style="background-color: rgb(0, 181, 255);" id="app" title="Weather4All">
+    <ion-content class="has-header" padding="true">
+        <form class="list " id="weather4All-form1" novalidate>
+            <label id="weather4All-input1" class="item item-input ">
+              <input placeholder="Ciudad" type="text" ng-model="inputCity">
+            </label>
+        </form>
+        <button class=" button button-energized  button-block icon ion-android-search " style="color:#000000;" ng-click="search(inputCity )" id="search">Buscar</button>
+        <p class=" " style="margin-top:0px;color:#000000;font-size:18px;text-align:center;" id="city">{{city.name}}, {{city.sys.country}}</p>
+        <div class="">
+            <img style="display: block; margin-left: auto; margin-right: auto;" src=http://openweathermap.org/img/w/{{city.weather[0].icon}}.png height="50" width="50">
+        </div>
+        <p class=" " style="margin-top:0px;color:#000000;font-size:18px;text-align:center;" id="temp">{{city.main.temp}}º</p>
+        <p class=" " style="margin-top:0px;color:#2D2D2D;font-size:16px;text-align:center;" id="description">{{city.weather[0].description}}</p>
+        <div style="width: 283px; height: 20px;" class="spacer"></div>
+        <p class=" " style="margin-top:0px;color:#000000;font-size:18px;text-align:center;" id="t_humidity">Humedad</p>
+        <p class=" " style="margin-top:0px;color:#2D2D2D;font-size:14px;text-align:center;" id="humidity">{{city.main.humidity}}%</p>
+        <div style="width: 283px; height: 20px;" class="spacer"></div>
+        <p class=" " style="margin-top:0px;color:#000000;font-size:18px;text-align:center;" id="t_wind">Velocidad viento</p>
+        <p class=" " style="margin-top:0px;color:#2D2D2D;font-size:14px;text-align:center;" id="wind">{{city.wind.speed}}m/s</p>
+    </ion-content>
+</ion-view>
