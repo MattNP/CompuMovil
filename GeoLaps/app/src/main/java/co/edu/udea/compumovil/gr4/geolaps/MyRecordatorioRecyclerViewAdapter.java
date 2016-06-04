@@ -36,7 +36,7 @@ public class MyRecordatorioRecyclerViewAdapter extends RecyclerView.Adapter<MyRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getId());
+        holder.mIdView.setText(String.valueOf(mValues.get(position).getId()));
         holder.mContentView.setText(mValues.get(position).getNombre());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

@@ -28,4 +28,6 @@ angular.module('app.controllers', ['app.services'])
     function onDeviceReady() {
       navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
     }
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 })

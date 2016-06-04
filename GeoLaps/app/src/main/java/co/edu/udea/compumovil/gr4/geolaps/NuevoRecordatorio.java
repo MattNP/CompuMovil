@@ -29,6 +29,8 @@ public class NuevoRecordatorio extends AppCompatActivity {
 
     public static final String FORMATO_FECHA = "dd-MMM-yyyy";
     public static final String FORMATO_HORA = "HH:mm";
+    private static final int TIPO_LUGAR = 1;
+    private static final int TIPO_RECORDATORIO = 2;
     public static final int REQUEST_MAP = 4236;
 
     private Spinner spinner_tipo_recordatorio, spinner_tipo_lugar;
@@ -39,11 +41,10 @@ public class NuevoRecordatorio extends AppCompatActivity {
     private final Calendar calendar = Calendar.getInstance();
     private DatePickerFragment datePickerFragment;
     private TimePickerFragment timePickerFragment;
-    private double latitud, longitud;
+    private double latitud, longitud, latitudActual, longitudActual;
     private String tipo_recordario, tipo_lugar, titulo, lugar, descripcion, fecha, hora, timestamp;
 
-    private final int TIPO_LUGAR = 1;
-    private final int TIPO_RECORDATORIO = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,14 @@ public class NuevoRecordatorio extends AppCompatActivity {
         txt_hora = (TextView)findViewById(R.id.txt_hora);
         txt_hora.setText(formatoHora.format(calendar.getTime()));
         timePickerFragment = new TimePickerFragment();
+
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            if(intent.hasExtra(Dashboard.CURRENT_LONGITUDE) && intent.hasExtra(Dashboard.CURRENT_LATITUDE)) {
+                longitudActual = intent.getDoubleExtra(Dashboard.CURRENT_LONGITUDE, 0);
+                latitudActual = intent.getDoubleExtra(Dashboard.CURRENT_LATITUDE, 0);
+            }
+        }
     }
 
     public void onClick(View view){
@@ -87,6 +96,8 @@ public class NuevoRecordatorio extends AppCompatActivity {
                 break;
             case R.id.img_mapa:
                 Intent intentMap = new Intent(this, MapActivity.class);
+                intentMap.putExtra(Dashboard.CURRENT_LATITUDE, latitudActual);
+                intentMap.putExtra(Dashboard.CURRENT_LONGITUDE, longitudActual);
                 startActivityForResult(intentMap,REQUEST_MAP);
         }
     }

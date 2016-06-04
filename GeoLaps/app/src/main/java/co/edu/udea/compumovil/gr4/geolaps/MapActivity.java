@@ -2,14 +2,17 @@ package co.edu.udea.compumovil.gr4.geolaps;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,6 +39,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            if(intent.hasExtra(Dashboard.CURRENT_LONGITUDE) && intent.hasExtra(Dashboard.CURRENT_LATITUDE)) {
+                lat = intent.getDoubleExtra(Dashboard.CURRENT_LATITUDE, 0);
+                lng = intent.getDoubleExtra(Dashboard.CURRENT_LONGITUDE, 0);
+                Log.d("onMapReady: ", "intentRecibido: (" + Double.toString(lat) + "," + Double.toString(lng) + ")");
+            }
+        }
     }
 
 
@@ -58,9 +70,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         }
 
-        //Debe ser la ubicación actual del usuario
-
-        LatLng latLng = new LatLng(6.267981, -75.568040);
+        LatLng latLng = new LatLng(lat, lng);
+        Log.d("onMapReady: ", "Punto ubicado: " + latLng.toString());
         mMap.addMarker(new MarkerOptions().position(latLng));
 
         mMap.getUiSettings().setZoomControlsEnabled(true);

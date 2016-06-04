@@ -64,6 +64,9 @@ public class Dashboard extends AppCompatActivity
     private DBHelper dbHelper;
     private SQLiteDatabase db;
 
+    public static final String CURRENT_LATITUDE = "currentLatitude";
+    public static final String CURRENT_LONGITUDE = "currentLongitude";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,9 +81,11 @@ public class Dashboard extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "oprimio la tecla", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "FAB", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Intent intent = new Intent(getBaseContext(), NuevoRecordatorio.class);
+                intent.putExtra(CURRENT_LATITUDE, currentLatitude);
+                intent.putExtra(CURRENT_LONGITUDE, currentLongitude);
                 startActivity(intent);
 
             }
@@ -142,7 +147,7 @@ public class Dashboard extends AppCompatActivity
                 null,
                 null);
 
-        Log.d("getRecordatorio", Integer.toString(cursorRecordatorios.getCount()));
+        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorios.getCount()));
 
         if(cursorRecordatorios.moveToFirst()) {
             do {
@@ -159,6 +164,8 @@ public class Dashboard extends AppCompatActivity
                 recordatorio.setHora_limite(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.HORA_LIMITE)));
                 recordatorio.setTimestamp(cursorRecordatorios.getLong(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.TIMESTAMP)));
                 recordatorio.setDescripcion(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.DESCRIPCION)));
+
+                recordatoriosActivos.add(recordatorio);
 
             } while(cursorRecordatorios.moveToNext());
         }
@@ -177,8 +184,6 @@ public class Dashboard extends AppCompatActivity
                 null,
                 null,
                 null);
-
-        Log.d("getRecordatorio", Integer.toString(cursorLugar.getCount()));
 
         if (cursorLugar.moveToFirst()) {
             lugar.setId(cursorLugar.getInt(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.ID)));
@@ -315,8 +320,6 @@ public class Dashboard extends AppCompatActivity
     public void onLocationChanged(Location location) {
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
-
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
 
         //mMap.clear();
 
