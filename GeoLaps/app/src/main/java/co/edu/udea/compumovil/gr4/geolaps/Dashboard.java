@@ -6,6 +6,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +34,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -211,6 +214,8 @@ public class Dashboard extends AppCompatActivity
         }
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        /*Implementar que cuando toque en un lugar pueda crear un recordatorio a ese lugar
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -221,6 +226,7 @@ public class Dashboard extends AppCompatActivity
                 //mMap.addMarker(new MarkerOptions().position(point));
             }
         });
+        */
 
         ubicarMarcadores();
 
@@ -247,10 +253,6 @@ public class Dashboard extends AppCompatActivity
 
     }
 
-    /**
-     * If connected get lat and long
-     *
-     */
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -263,18 +265,45 @@ public class Dashboard extends AppCompatActivity
 
         } else {
 
-
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
 
-            //mMap.clear();
             MarkerOptions mp = new MarkerOptions();
             mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
             mp.title("onConnected");
-            //mMap.addMarker(mp);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            verificarRadio();
         }
+    }
+
+
+    //Esto lo debe hacer cada poco tiempo
+    private void verificarRadio() {
+
+        Circle mCircle = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(currentLatitude, currentLongitude))
+                .radius(100));
+
+        for(Recordatorio recordatorio : recordatoriosActivos) {
+            Lugar lugar = recordatorio.getLugar();
+            float[] distance = new float[2];
+            Location.distanceBetween(lugar.getLatitud(), lugar.getLongitud(),
+                    mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
+
+            if(distance[0] > mCircle.getRadius()){
+                Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius(), Toast.LENGTH_LONG).show();
+                Log.d("verificarRadio", "Outside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius());
+            } else {
+                Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius() , Toast.LENGTH_LONG).show();
+                Log.d("verificarRadio", "Inside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius());
+            }
+        }
+
+
+
+
     }
 
 
@@ -310,12 +339,6 @@ public class Dashboard extends AppCompatActivity
         }
     }
 
-    /**
-     * If locationChanges change lat and long
-     *
-     *
-     * @param location
-     */
     @Override
     public void onLocationChanged(Location location) {
         currentLatitude = location.getLatitude();
@@ -333,6 +356,8 @@ public class Dashboard extends AppCompatActivity
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(), location.getLongitude()), 16));
+
+        verificarRadio();
     }
 
     @Override
@@ -370,7 +395,6 @@ public class Dashboard extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

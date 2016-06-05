@@ -2,25 +2,31 @@ package co.edu.udea.compumovil.gr4.geolaps;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.jar.Manifest;
+import java.io.IOException;
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -30,12 +36,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private double lat;
     private double lng;
+    private EditText txt_buscar;
+
+    private String busqueda;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        setContentView(R.layout.activity_map);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -45,9 +54,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if(intent.hasExtra(Dashboard.CURRENT_LONGITUDE) && intent.hasExtra(Dashboard.CURRENT_LATITUDE)) {
                 lat = intent.getDoubleExtra(Dashboard.CURRENT_LATITUDE, 0);
                 lng = intent.getDoubleExtra(Dashboard.CURRENT_LONGITUDE, 0);
-                Log.d("onMapReady: ", "intentRecibido: (" + Double.toString(lat) + "," + Double.toString(lng) + ")");
             }
         }
+
+        txt_buscar = (EditText)findViewById(R.id.txt_buscar);
     }
 
 
@@ -71,24 +81,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         LatLng latLng = new LatLng(lat, lng);
-        Log.d("onMapReady: ", "Punto ubicado: " + latLng.toString());
-        mMap.addMarker(new MarkerOptions().position(latLng));
-
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
-                // TODO Auto-generated method stub
-                //lstLatLngs.add(point);
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(point));
-                lat = point.latitude;
-                lng = point.longitude;
+                crearMarcador(point);
             }
         });
+    }
+
+    private void crearMarcador(LatLng latLng) {
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(latLng));
+        lat = latLng.latitude;
+        lng = latLng.longitude;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
     }
 
     @Override
@@ -106,6 +115,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void onSearch(View view) {
+        busqueda = txt_buscar.getText().toString();
+
+        if(busqueda != null && !busqueda.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                List<Address> listaLugares = geocoder.getFromLocationName(busqueda, 1);
+                if(listaLugares.size() == 0) {
+                    Toast.makeText(this, "No se pudo encontrar el lugar", Toast.LENGTH_SHORT);
+
+                } else {
+                    Address lugar = listaLugares.get(0);
+                    LatLng lugarLatLng = new LatLng(lugar.getLatitude(), lugar.getLongitude());
+                    crearMarcador(lugarLatLng);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

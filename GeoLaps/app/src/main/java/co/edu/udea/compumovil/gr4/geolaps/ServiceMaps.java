@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr4.lab3pomodoro;
+package co.edu.udea.compumovil.gr4.geolaps;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,20 +14,15 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-public class ServiceTimer extends Service {
+public class ServiceMaps extends Service {
 
-
-    public final static String COUNTDOWN_BR = "co.edu.udea.compumovil.gr4.lab3pomodoro";
-    public final static String MILLISECONDS = "milliseconds";
-    public final static String INTERVAL = "interval";
-    public final static String COUNTDOWN = "countdown";
+    public final static String BROADCAST = "co.edu.udea.compumovil.gr4.geolaps";
     public final static String FINISH = "finish";
 
-    private Intent intentBroadcast = new Intent(COUNTDOWN_BR);
-    private CountDownTimer timer;
-    private final String TAG = "ServiceTimer";
+    private Intent intentBroadcast = new Intent(BROADCAST);
+    private final String TAG = "ServiceMaps";
 
-    public ServiceTimer() {
+    public ServiceMaps() {
     }
 
     @Override
@@ -41,6 +36,8 @@ public class ServiceTimer extends Service {
         Log.d(TAG, "onCreate");
     }
 
+
+    /*
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
 
@@ -87,7 +84,7 @@ public class ServiceTimer extends Service {
     }
 
     private void presentNotification(int visibility, int icon, String title, String text) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, Dashboard.class);
         intent.setAction("android.intent.action.MAIN");
         intent.addCategory("android.intent.category.LAUNCHER");
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -110,11 +107,5 @@ public class ServiceTimer extends Service {
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
     }
-
-
-
-
-
-
-
+    */
 }

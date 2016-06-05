@@ -47,5 +47,8 @@
     <string name="token_error_message">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
+    <string name="buscar">Buscar</string>
+    <string name="txt_buscar">Buscar un lugar o dirección</string>
+    <string name="notification_information">Notificación lugar</string>
 
 </resources>
