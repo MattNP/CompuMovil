@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +35,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
     private static final int TIPO_LUGAR = 1;
     private static final int TIPO_RECORDATORIO = 2;
     public static final int REQUEST_MAP = 4236;
+    public static final String ID_NUEVO = "idNuevo";
 
     private Spinner spinner_tipo_recordatorio, spinner_tipo_lugar;
     private EditText txt_titulo, txt_descripcion;
@@ -189,11 +193,16 @@ public class NuevoRecordatorio extends AppCompatActivity {
             valuesRecordatorio.put(GeoLapsContract.ColumnaRecordatorio.TIMESTAMP, timestamp);
             valuesRecordatorio.put(GeoLapsContract.ColumnaRecordatorio.DESCRIPCION, descripcion);
 
-            db.insertWithOnConflict(GeoLapsContract.TABLE_RECORDATORIO, null, valuesRecordatorio,
+            long id = db.insertWithOnConflict(GeoLapsContract.TABLE_RECORDATORIO, null, valuesRecordatorio,
                     SQLiteDatabase.CONFLICT_IGNORE);
             dbHelper.close();
 
             Toast.makeText(this, getString(R.string.recordatorio_guardado), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent();
+            intent.putExtra(ID_NUEVO, id);
+            setResult(Dashboard.REQUEST_NUEVO, intent);
+
             finish();
         }
 
@@ -206,7 +215,15 @@ public class NuevoRecordatorio extends AppCompatActivity {
         if(requestCode == REQUEST_MAP && data != null){
             latitud = data.getDoubleExtra(MapActivity.LATITUD, 0);
             longitud = data.getDoubleExtra(MapActivity.LONGITUD, 0);
-            lugar = String.format("%.6f, %.6f", latitud, longitud);
+            String nombreLugar = "";
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                List<Address> listaDirecciones = geocoder.getFromLocation(latitud, longitud, 1);
+                nombreLugar = listaDirecciones.get(0).getAddressLine(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            lugar = nombreLugar;
             txt_lugar.setText(lugar);
         }
     }

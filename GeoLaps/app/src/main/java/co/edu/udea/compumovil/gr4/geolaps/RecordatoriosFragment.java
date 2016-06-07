@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import co.edu.udea.compumovil.gr4.geolaps.dummy.DummyContent;
-import co.edu.udea.compumovil.gr4.geolaps.dummy.DummyContent.DummyItem;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RecordatorioFragment extends Fragment {
+public class RecordatoriosFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -35,13 +33,13 @@ public class RecordatorioFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public RecordatorioFragment() {
+    public RecordatoriosFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static RecordatorioFragment newInstance(int columnCount) {
-        RecordatorioFragment fragment = new RecordatorioFragment();
+    public static RecordatoriosFragment newInstance(int columnCount) {
+        RecordatoriosFragment fragment = new RecordatoriosFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -72,7 +70,7 @@ public class RecordatorioFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             Dashboard dashboard = (Dashboard)getActivity();
-            List<Recordatorio> recordatorios = dashboard.getRecordatoriosActivos();
+            List<Recordatorio> recordatorios = dashboard.getRecordatorios();
             Log.d("RecodatorioFragment", "Tamaño recordatorios: " + recordatorios.size());
             recyclerView.setAdapter(new MyRecordatorioRecyclerViewAdapter(recordatorios, mListener));
         }

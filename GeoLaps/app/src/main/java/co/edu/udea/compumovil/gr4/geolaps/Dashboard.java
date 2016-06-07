@@ -6,7 +6,6 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -37,29 +36,31 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
+import co.edu.udea.compumovil.gr4.geolaps.database.DBUtil;
 import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
+        //GoogleApiClient.ConnectionCallbacks,
+        //GoogleApiClient.OnConnectionFailedListener,
+        //LocationListener,
         OnMapReadyCallback,
-        RecordatorioFragment.OnListFragmentInteractionListener{
+        RecordatoriosFragment.OnListFragmentInteractionListener{
 
     private GoogleMap mMap;
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
+    //private GoogleApiClient mGoogleApiClient;
+    //private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
     private List<Recordatorio> recordatoriosActivos;
@@ -69,6 +70,7 @@ public class Dashboard extends AppCompatActivity
 
     public static final String CURRENT_LATITUDE = "currentLatitude";
     public static final String CURRENT_LONGITUDE = "currentLongitude";
+    public static final int REQUEST_NUEVO = 2606;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,7 @@ public class Dashboard extends AppCompatActivity
                 Intent intent = new Intent(getBaseContext(), NuevoRecordatorio.class);
                 intent.putExtra(CURRENT_LATITUDE, currentLatitude);
                 intent.putExtra(CURRENT_LONGITUDE, currentLongitude);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_NUEVO);
 
             }
         });
@@ -103,6 +105,7 @@ public class Dashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        /*
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 // The next two lines tell the new client that “this” current class will handle connection stuff
                 .addConnectionCallbacks(this)
@@ -115,6 +118,7 @@ public class Dashboard extends AppCompatActivity
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                */
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_mapa);
@@ -122,8 +126,10 @@ public class Dashboard extends AppCompatActivity
 
         recordatoriosActivos = getRecordatoriosActivos();
 
-        Fragment fragment = new RecordatorioFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,fragment).commit();
+        Intent intent = new Intent(this, IntentServiceMaps.class);
+        startService(intent);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
 
     }
 
@@ -132,75 +138,37 @@ public class Dashboard extends AppCompatActivity
         for(Recordatorio recordatorio : recordatoriosActivos) {
             Lugar lugar = recordatorio.getLugar();
             LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
-            Log.d("ubicarMarcadores", "lat: " + lugar.getLatitud() + " lng: + " + lugar.getLongitud());
-            mMap.addMarker(new MarkerOptions().position(latLng));
-            Log.d("ubicarMarcadores", lugar.getNombre());
+            mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet("Lugar"));
         }
     }
 
-    public List<Recordatorio> getRecordatoriosActivos() {
-
-        recordatoriosActivos = new ArrayList<>();
-
-        Cursor cursorRecordatorios = db.query(GeoLapsContract.TABLE_RECORDATORIO,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorios.getCount()));
-
-        if(cursorRecordatorios.moveToFirst()) {
-            do {
-                Recordatorio recordatorio = new Recordatorio();
-                recordatorio.setId(cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.ID)));
-                recordatorio.setUid(cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.UID)));
-                recordatorio.setTipo(cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.TIPO)));
-
-                int lugarId = cursorRecordatorios.getInt(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.LUGAR));
-                recordatorio.setLugar(getLugar(lugarId));
-
-                recordatorio.setNombre(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.NOMBRE)));
-                recordatorio.setFecha_limite(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.FECHA_LIMITE)));
-                recordatorio.setHora_limite(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.HORA_LIMITE)));
-                recordatorio.setTimestamp(cursorRecordatorios.getLong(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.TIMESTAMP)));
-                recordatorio.setDescripcion(cursorRecordatorios.getString(cursorRecordatorios.getColumnIndex(GeoLapsContract.ColumnaRecordatorio.DESCRIPCION)));
-
-                recordatoriosActivos.add(recordatorio);
-
-            } while(cursorRecordatorios.moveToNext());
-        }
-
+    public List<Recordatorio> getRecordatorios() {
         return recordatoriosActivos;
     }
 
-    public Lugar getLugar(int id) {
+    private List<Recordatorio> getRecordatoriosActivos() {
 
-        Lugar lugar = new Lugar();
+        recordatoriosActivos = new ArrayList<>();
 
-        Cursor cursorLugar = db.query(GeoLapsContract.TABLE_LUGAR,
+        Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
                 null,
-                GeoLapsContract.ColumnaLugar.ID + "=?",
-                new String[] {Integer.toString(id)},
+                null,
+                null,
                 null,
                 null,
                 null);
 
-        if (cursorLugar.moveToFirst()) {
-            lugar.setId(cursorLugar.getInt(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.ID)));
-            lugar.setTipo(Integer.toString(cursorLugar.getInt(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.TIPO))));
-            lugar.setNombre(cursorLugar.getString(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.NOMBRE)));
-            lugar.setLatitud(cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
-            double lat = (cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LATITUD)));
-            Log.d("getLugares", "lat: " + lat);
-            lugar.setLongitud(cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD)));
-            double lng = cursorLugar.getDouble(cursorLugar.getColumnIndex(GeoLapsContract.ColumnaLugar.LONGITUD));
-            Log.d("getLugares", "log: " + lng);
+        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
+
+        if(cursorRecordatorio.moveToFirst()) {
+            do {
+                Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, this);
+                recordatoriosActivos.add(recordatorio);
+
+            } while(cursorRecordatorio.moveToNext());
         }
 
-        return lugar;
+        return recordatoriosActivos;
     }
 
     @Override
@@ -215,7 +183,6 @@ public class Dashboard extends AppCompatActivity
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        /*Implementar que cuando toque en un lugar pueda crear un recordatorio a ese lugar
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -226,7 +193,14 @@ public class Dashboard extends AppCompatActivity
                 //mMap.addMarker(new MarkerOptions().position(point));
             }
         });
-        */
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                marker.showInfoWindow();
+                return true;
+            }
+        });
 
         ubicarMarcadores();
 
@@ -236,7 +210,8 @@ public class Dashboard extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         //Now lets connect to the API
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -244,15 +219,17 @@ public class Dashboard extends AppCompatActivity
         super.onPause();
         Log.v(this.getClass().getSimpleName(), "onPause()");
 
+        /*
         //Disconnect from API onPause()
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
-
+        */
 
     }
 
+    /*
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -277,8 +254,10 @@ public class Dashboard extends AppCompatActivity
             verificarRadio();
         }
     }
+    */
 
 
+    /*
     //Esto lo debe hacer cada poco tiempo
     private void verificarRadio() {
 
@@ -292,21 +271,16 @@ public class Dashboard extends AppCompatActivity
             Location.distanceBetween(lugar.getLatitud(), lugar.getLongitud(),
                     mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
 
-            if(distance[0] > mCircle.getRadius()){
-                Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius(), Toast.LENGTH_LONG).show();
-                Log.d("verificarRadio", "Outside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius());
-            } else {
-                Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius() , Toast.LENGTH_LONG).show();
+            if(distance[0] < mCircle.getRadius()){
                 Log.d("verificarRadio", "Inside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius());
             }
         }
-
-
-
-
     }
 
+    */
 
+
+    /*
     @Override
     public void onConnectionSuspended(int i) {}
 
@@ -318,6 +292,7 @@ public class Dashboard extends AppCompatActivity
              * start a Google Play services activity that can resolve
              * error.
              */
+    /*
         if (connectionResult.hasResolution()) {
             try {
                 // Start an Activity that tries to resolve the error
@@ -326,6 +301,8 @@ public class Dashboard extends AppCompatActivity
                      * Thrown if Google Play services canceled the original
                      * PendingIntent
                      */
+
+    /*
             } catch (IntentSender.SendIntentException e) {
                 // Log the error
                 e.printStackTrace();
@@ -335,10 +312,14 @@ public class Dashboard extends AppCompatActivity
                  * If no resolution is available, display a dialog to the
                  * user with the error.
                  */
+
+    /*
             Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
+    */
 
+    /*
     @Override
     public void onLocationChanged(Location location) {
         currentLatitude = location.getLatitude();
@@ -359,6 +340,8 @@ public class Dashboard extends AppCompatActivity
 
         verificarRadio();
     }
+    */
+
 
     @Override
     public void onBackPressed() {
@@ -417,6 +400,37 @@ public class Dashboard extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Recordatorio item) {
+        Intent intent = new Intent(this, RecordatorioActivity.class);
+        startActivity(intent);
         Toast.makeText(this, "Presionó un recordatorio", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_NUEVO && data != null){
+            if(data.hasExtra(NuevoRecordatorio.ID_NUEVO)) {
+                Long id = data.getLongExtra(NuevoRecordatorio.ID_NUEVO, 0);
+                Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
+                        null,
+                        GeoLapsContract.ColumnaRecordatorio.ID + "=?",
+                        new String[] {Long.toString(id)},
+                        null,
+                        null,
+                        null);
+
+                if (cursorRecordatorio.moveToFirst()) {
+                    Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, this);
+                    recordatoriosActivos.add(recordatorio);
+
+                    Lugar lugar = recordatorio.getLugar();
+                    LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
+                    mMap.addMarker(new MarkerOptions().position(latLng));
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
+                }
+            }
+        }
     }
 }

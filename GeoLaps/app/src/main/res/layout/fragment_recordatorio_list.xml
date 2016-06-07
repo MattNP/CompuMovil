@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="co.edu.udea.compumovil.gr4.geolaps.RecordatorioFragment"
+    tools:context=".RecordatoriosFragment"
     tools:listitem="@layout/fragment_recordatorio" />

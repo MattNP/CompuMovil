@@ -131,7 +131,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } else {
                     Address lugar = listaLugares.get(0);
                     LatLng lugarLatLng = new LatLng(lugar.getLatitude(), lugar.getLongitude());
-                    crearMarcador(lugarLatLng);
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(lugarLatLng).title(lugar.getFeatureName()).snippet(lugar.getAddressLine(0)));
+                    lat = lugarLatLng.latitude;
+                    lng = lugarLatLng.longitude;
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lugarLatLng, 16));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

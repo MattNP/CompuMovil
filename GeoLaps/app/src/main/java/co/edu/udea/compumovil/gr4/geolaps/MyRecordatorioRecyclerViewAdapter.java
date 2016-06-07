@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
-import co.edu.udea.compumovil.gr4.geolaps.RecordatorioFragment.OnListFragmentInteractionListener;
+import co.edu.udea.compumovil.gr4.geolaps.RecordatoriosFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 

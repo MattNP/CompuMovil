@@ -80,10 +80,12 @@
         <service
             android:name=".gcm.RegistrationIntentService"
             android:exported="false" />
+
+        <activity android:name=".RecordatorioActivity" />
+
         <service
-            android:name=".ServiceMaps"
-            android:enabled="true"
-            android:exported="true"></service>
+            android:name=".IntentServiceMaps"
+            android:exported="false"></service>
     </application>
 
 </manifest>
