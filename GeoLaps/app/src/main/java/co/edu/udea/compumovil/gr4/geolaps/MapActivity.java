@@ -42,6 +42,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Recordar datos porque al entrar al mapa se pierden
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 

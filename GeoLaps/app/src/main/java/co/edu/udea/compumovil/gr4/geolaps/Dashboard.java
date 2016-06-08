@@ -261,6 +261,7 @@ public class Dashboard extends AppCompatActivity
     //Esto lo debe hacer cada poco tiempo
     private void verificarRadio() {
 
+        //Hacer círculo al marcador no al usuario, un circulo por cada lugar. Buscar cómo hacer un círculo sin ubicarlo en el mapa
 
         Circle mCircle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(currentLatitude, currentLongitude))
