@@ -71,6 +71,7 @@ public class Dashboard extends AppCompatActivity
     public static final String CURRENT_LATITUDE = "currentLatitude";
     public static final String CURRENT_LONGITUDE = "currentLongitude";
     public static final int REQUEST_NUEVO = 2606;
+    public static final String RECORDATORIO_SELECCIONADO = "recordatorioSeleccionado";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +139,7 @@ public class Dashboard extends AppCompatActivity
         for(Recordatorio recordatorio : recordatoriosActivos) {
             Lugar lugar = recordatorio.getLugar();
             LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet("Lugar"));
+            mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet(lugar.getNombre()));
         }
     }
 
@@ -256,10 +257,10 @@ public class Dashboard extends AppCompatActivity
     }
     */
 
-
     /*
     //Esto lo debe hacer cada poco tiempo
     private void verificarRadio() {
+
 
         Circle mCircle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(currentLatitude, currentLongitude))
@@ -401,8 +402,8 @@ public class Dashboard extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(Recordatorio item) {
         Intent intent = new Intent(this, RecordatorioActivity.class);
+        intent.putExtra(RECORDATORIO_SELECCIONADO, item);
         startActivity(intent);
-        Toast.makeText(this, "Presionó un recordatorio", Toast.LENGTH_SHORT).show();
     }
 
     @Override

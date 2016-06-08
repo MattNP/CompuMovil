@@ -1,9 +1,12 @@
 package co.edu.udea.compumovil.gr4.geolaps.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by MattNP on 20/05/2016.
  */
-public class Recordatorio {
+public class Recordatorio implements Parcelable {
 
     private int id;
     private int uid;
@@ -87,4 +90,50 @@ public class Recordatorio {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.uid);
+        dest.writeInt(this.tipo);
+        dest.writeParcelable(this.lugar, flags);
+        dest.writeString(this.nombre);
+        dest.writeString(this.fecha_limite);
+        dest.writeString(this.hora_limite);
+        dest.writeLong(this.timestamp);
+        dest.writeString(this.descripcion);
+    }
+
+    public Recordatorio() {
+    }
+
+    protected Recordatorio(Parcel in) {
+        this.id = in.readInt();
+        this.uid = in.readInt();
+        this.tipo = in.readInt();
+        this.lugar = in.readParcelable(Lugar.class.getClassLoader());
+        this.nombre = in.readString();
+        this.fecha_limite = in.readString();
+        this.hora_limite = in.readString();
+        this.timestamp = in.readLong();
+        this.descripcion = in.readString();
+    }
+
+    public static final Parcelable.Creator<Recordatorio> CREATOR = new Parcelable.Creator<Recordatorio>() {
+        @Override
+        public Recordatorio createFromParcel(Parcel source) {
+            return new Recordatorio(source);
+        }
+
+        @Override
+        public Recordatorio[] newArray(int size) {
+            return new Recordatorio[size];
+        }
+    };
 }
