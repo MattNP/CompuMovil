@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -56,12 +57,20 @@ public class Dashboard extends AppCompatActivity
     public static final String CURRENT_LATITUDE = "currentLatitude";
     public static final String CURRENT_LONGITUDE = "currentLongitude";
     public static final int REQUEST_NUEVO = 2606;
+    public static final int REQUEST_ELIMINAR = 0626;
     public static final String RECORDATORIO_SELECCIONADO = "recordatorioSeleccionado";
+    public static final String RECORDATORIO_ELIMINADO = "recordatorioEliminado";
 
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //updateGUI(intent);
+            if(intent.hasExtra(CURRENT_LATITUDE) && intent.hasExtra(CURRENT_LONGITUDE)) {
+                currentLatitude = intent.getDoubleExtra(CURRENT_LATITUDE, 0);
+                currentLongitude = intent.getDoubleExtra(CURRENT_LONGITUDE, 0);
+                Log.d("onHandleIntent", currentLatitude + "lat");
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(currentLatitude, currentLongitude), 13));
+            }
         }
     };
 
@@ -88,6 +97,10 @@ public class Dashboard extends AppCompatActivity
             }
         });
 
+        Intent intent = new Intent(this, IntentServiceMaps.class);
+        startService(intent);
+        recordatoriosActivos = getRecordatoriosActivos();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -101,12 +114,6 @@ public class Dashboard extends AppCompatActivity
                 .findFragmentById(R.id.fragment_mapa);
         mapFragment.getMapAsync(this);
 
-        recordatoriosActivos = getRecordatoriosActivos();
-
-        Intent intent = new Intent(this, IntentServiceMaps.class);
-        startService(intent);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
 
                        /*
                 Cuando reciba el broadcast
@@ -125,6 +132,7 @@ public class Dashboard extends AppCompatActivity
             Lugar lugar = recordatorio.getLugar();
             LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
             mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet(lugar.getNombre()));
+            Log.d("UbicarMarcadores", "lat" + lugar.getLatitud() + "Lon" + lugar.getLongitud());
         }
     }
 
@@ -146,8 +154,6 @@ public class Dashboard extends AppCompatActivity
                 null,
                 null);
 
-        db.close();
-
         Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
 
         if(cursorRecordatorio.moveToFirst()) {
@@ -158,20 +164,26 @@ public class Dashboard extends AppCompatActivity
             } while(cursorRecordatorio.moveToNext());
         }
 
+        db.close();
+
         return recordatoriosActivos;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
-                ||(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED)){
+
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                ||(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)){
 
             mMap.setMyLocationEnabled(true);
 
+
         }
 
+
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
@@ -200,6 +212,9 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        recordatoriosActivos = getRecordatoriosActivos();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
         registerReceiver(br, new IntentFilter(IntentServiceMaps.BR));
     }
 
@@ -322,7 +337,7 @@ public class Dashboard extends AppCompatActivity
     public void onListFragmentInteraction(Recordatorio item) {
         Intent intent = new Intent(this, RecordatorioActivity.class);
         intent.putExtra(RECORDATORIO_SELECCIONADO, item);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_ELIMINAR);
     }
 
     @Override
@@ -330,8 +345,12 @@ public class Dashboard extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_NUEVO && data != null){
-            if(data.hasExtra(NuevoRecordatorio.ID_NUEVO)) {
+            onResume();
+            /*if(data.hasExtra(NuevoRecordatorio.ID_NUEVO)) {
                 Long id = data.getLongExtra(NuevoRecordatorio.ID_NUEVO, 0);
+
+                db = dbHelper.getWritableDatabase();
+
                 Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
                         null,
                         GeoLapsContract.ColumnaRecordatorio.ID + "=?",
@@ -350,7 +369,19 @@ public class Dashboard extends AppCompatActivity
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
                 }
+
+                db.close();
             }
+            */
+            ubicarMarcadores();
         }
+
+        if(requestCode == REQUEST_ELIMINAR && data != null) {
+           onResume();
+            ubicarMarcadores();
+
+        }
+
+
     }
 }

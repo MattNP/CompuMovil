@@ -2,18 +2,13 @@ package co.edu.udea.compumovil.gr4.geolaps;
 
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.Context;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,10 +17,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
+import co.edu.udea.compumovil.gr4.geolaps.database.DBUtil;
+import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
@@ -45,6 +43,8 @@ public class IntentServiceMaps extends IntentService implements
     public final static String BR = "co.edu.udea.compumovil.gr4.geolaps";
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+
+    private Intent intentBroadcast;
 
     private double currentLatitude;
     private double currentLongitude;
@@ -75,6 +75,8 @@ public class IntentServiceMaps extends IntentService implements
 
         mGoogleApiClient.connect();
 
+        intentBroadcast=new Intent(BR);
+
     }
 
     public void onConnected(Bundle bundle) {
@@ -95,14 +97,13 @@ public class IntentServiceMaps extends IntentService implements
             currentLongitude = location.getLongitude();
 
             Log.d("onHandleIntent", "I got maps");
-            Intent intentBroadcast = new Intent(BR);
+
             intentBroadcast.putExtra(Dashboard.CURRENT_LATITUDE, currentLatitude);
             intentBroadcast.putExtra(Dashboard.CURRENT_LONGITUDE, currentLongitude);
+            Log.d("onHandleIntent", "broadcast");
             sendBroadcast(intentBroadcast);
 
-            /*
             verificarRadio();
-            */
         }
     }
 
@@ -140,17 +141,24 @@ public class IntentServiceMaps extends IntentService implements
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("verificarRadio", "cambio ubicación");
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
         //Enviar broadcast
-        //verificarRadio();
+        intentBroadcast.putExtra(Dashboard.CURRENT_LATITUDE,currentLatitude);
+        intentBroadcast.putExtra(Dashboard.CURRENT_LONGITUDE,currentLongitude);
+        sendBroadcast(intentBroadcast);
+        verificarRadio();
     }
 
-    /*
     //Esto lo debe hacer cada poco tiempo
     private void verificarRadio() {
 
+        Log.d("verificarRadio", "Inside the method");
+
         int radio = 100; //Debe ser configurable, y por evento
+
+        List<Recordatorio> recordatoriosActivos = getRecordatoriosActivos();
 
         for(Recordatorio recordatorio : recordatoriosActivos) {
             Lugar lugar = recordatorio.getLugar();
@@ -159,12 +167,44 @@ public class IntentServiceMaps extends IntentService implements
                     currentLatitude, currentLongitude, distance);
 
             if(distance[0] < radio){
-                Log.d("verificarRadio", "Inside, distance from center: " + distance[0] + " radius: " + radio);
-                presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, getString(R.string.notification_title), getString(R.string.notification_information));
+                Log.d("verificarRadio", "Inside " + recordatorio.getNombre() + ". Distancia: " + distance[0]);
+                Toast.makeText(this, "Inside " + recordatorio.getNombre(), Toast.LENGTH_SHORT).show();
+                //presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, getString(R.string.notification_title), getString(R.string.notification_information));
             }
         }
     }
-    */
+
+    private List<Recordatorio> getRecordatoriosActivos() {
+
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        List<Recordatorio> recordatoriosActivos = new ArrayList<>();
+
+        db = dbHelper.getWritableDatabase();
+
+        Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
+
+        if(cursorRecordatorio.moveToFirst()) {
+            do {
+                Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, this);
+                recordatoriosActivos.add(recordatorio);
+
+            } while(cursorRecordatorio.moveToNext());
+        }
+
+        db.close();
+
+        return recordatoriosActivos;
+    }
 
     /*
     private void presentNotification(int visibility, int icon, String title, String text) {

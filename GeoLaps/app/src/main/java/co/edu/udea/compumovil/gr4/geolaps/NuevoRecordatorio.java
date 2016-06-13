@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
 import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
+import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 public class NuevoRecordatorio extends AppCompatActivity {
 
@@ -36,6 +38,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
     private static final int TIPO_RECORDATORIO = 2;
     public static final int REQUEST_MAP = 4236;
     public static final String ID_NUEVO = "idNuevo";
+    public static final String ID_EDITAR="idEditar";
 
     private Spinner spinner_tipo_recordatorio, spinner_tipo_lugar;
     private EditText txt_titulo, txt_descripcion;
@@ -47,6 +50,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
     private TimePickerFragment timePickerFragment;
     private double latitud, longitud, latitudActual, longitudActual;
     private String tipo_recordario, tipo_lugar, titulo, lugar, descripcion, fecha, hora, timestamp;
+    private Recordatorio recordatorio;
 
 
 
@@ -80,14 +84,25 @@ public class NuevoRecordatorio extends AppCompatActivity {
         txt_hora = (TextView)findViewById(R.id.txt_hora);
         txt_hora.setText(formatoHora.format(calendar.getTime()));
         timePickerFragment = new TimePickerFragment();
-
+        recordatorio=null;
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             if(intent.hasExtra(Dashboard.CURRENT_LONGITUDE) && intent.hasExtra(Dashboard.CURRENT_LATITUDE)) {
                 longitudActual = intent.getDoubleExtra(Dashboard.CURRENT_LONGITUDE, 0);
                 latitudActual = intent.getDoubleExtra(Dashboard.CURRENT_LATITUDE, 0);
             }
+            if(intent.hasExtra(Dashboard.RECORDATORIO_SELECCIONADO)){
+                recordatorio=intent.getParcelableExtra(Dashboard.RECORDATORIO_SELECCIONADO);
+                if(recordatorio != null){
+                    txt_titulo.setText(recordatorio.getNombre());
+                    txt_descripcion.setText(recordatorio.getDescripcion());
+                    txt_hora.setText(recordatorio.getHora_limite());
+                    txt_fecha.setText(recordatorio.getFecha_limite());
+                    txt_lugar.setText(recordatorio.getLugar().getNombre());
+                }
+            }
         }
+
     }
 
     public void onClick(View view){
@@ -164,6 +179,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
         hora = txt_hora.getText().toString();
         timestamp = Long.toString(calendar.getTimeInMillis());
 
+
         if(titulo.equals("") || lugar.equals("")) {
             Toast.makeText(NuevoRecordatorio.this, getString(R.string.campos_incompletos), Toast.LENGTH_SHORT).show();
         } else {
@@ -192,16 +208,27 @@ public class NuevoRecordatorio extends AppCompatActivity {
             valuesRecordatorio.put(GeoLapsContract.ColumnaRecordatorio.HORA_LIMITE, hora);
             valuesRecordatorio.put(GeoLapsContract.ColumnaRecordatorio.TIMESTAMP, timestamp);
             valuesRecordatorio.put(GeoLapsContract.ColumnaRecordatorio.DESCRIPCION, descripcion);
+            long id;
+            if(recordatorio==null){
+                 id = db.insertWithOnConflict(GeoLapsContract.TABLE_RECORDATORIO, null, valuesRecordatorio,
+                        SQLiteDatabase.CONFLICT_IGNORE);
+                Intent intent = new Intent();
+                intent.putExtra(ID_NUEVO, id);
+                setResult(Dashboard.REQUEST_NUEVO, intent);
+            }else{
+                id=recordatorio.getId();
+                db.update(GeoLapsContract.TABLE_RECORDATORIO,valuesRecordatorio,GeoLapsContract.ColumnaRecordatorio.ID + "=" +id,null);
+                Intent intent = new Intent();
+                intent.putExtra(ID_EDITAR, id);
+                setResult(RecordatorioActivity.REQUEST_EDITAR, intent);
+                Log.d("startActivityForResult",recordatorio.getNombre()+ " nuevo");
+            }
 
-            long id = db.insertWithOnConflict(GeoLapsContract.TABLE_RECORDATORIO, null, valuesRecordatorio,
-                    SQLiteDatabase.CONFLICT_IGNORE);
             dbHelper.close();
 
             Toast.makeText(this, getString(R.string.recordatorio_guardado), Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent();
-            intent.putExtra(ID_NUEVO, id);
-            setResult(Dashboard.REQUEST_NUEVO, intent);
+
 
             finish();
         }
@@ -219,7 +246,13 @@ public class NuevoRecordatorio extends AppCompatActivity {
             Geocoder geocoder = new Geocoder(this);
             try {
                 List<Address> listaDirecciones = geocoder.getFromLocation(latitud, longitud, 1);
-                nombreLugar = listaDirecciones.get(0).getAddressLine(0);
+                if(listaDirecciones.size() != 0) {
+                    nombreLugar = listaDirecciones.get(0).getAddressLine(0);
+                } else {
+                    Toast.makeText(this, "El lugar no tiene dirección", Toast.LENGTH_SHORT).show();
+                    DecimalFormat numberFormat = new DecimalFormat("#.####");
+                    nombreLugar = numberFormat.format(latitud) + ", " + numberFormat.format(longitud);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
