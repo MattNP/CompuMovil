@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.RingtoneManager;
@@ -25,6 +26,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
+import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -37,6 +41,8 @@ public class IntentServiceMaps extends IntentService implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    public final static String BR = "co.edu.udea.compumovil.gr4.geolaps";
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
@@ -51,13 +57,7 @@ public class IntentServiceMaps extends IntentService implements
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Log.d("onHandleIntent", "Vamo a handlea");
-        mGoogleApiClient.connect();
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("onHandleIntent", "Antes");
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 // The next two lines tell the new client that “this” current class will handle connection stuff
@@ -72,7 +72,9 @@ public class IntentServiceMaps extends IntentService implements
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
         Log.d("onHandleIntent", "Start");
-        return super.onStartCommand(intent,flags,startId);
+
+        mGoogleApiClient.connect();
+
     }
 
     public void onConnected(Bundle bundle) {
@@ -93,33 +95,76 @@ public class IntentServiceMaps extends IntentService implements
             currentLongitude = location.getLongitude();
 
             Log.d("onHandleIntent", "I got maps");
+            Intent intentBroadcast = new Intent(BR);
+            intentBroadcast.putExtra(Dashboard.CURRENT_LATITUDE, currentLatitude);
+            intentBroadcast.putExtra(Dashboard.CURRENT_LONGITUDE, currentLongitude);
+            sendBroadcast(intentBroadcast);
 
             /*
-            MarkerOptions mp = new MarkerOptions();
-            mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
-            mp.title("onConnected");
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
             verificarRadio();
             */
         }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(int i) {}
 
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+            /*
+             * Google Play services can resolve some errors it detects.
+             * If the error has a resolution, try sending an Intent to
+             * start a Google Play services activity that can resolve
+             * error.
+             */
+
+        if (connectionResult.hasResolution()) {
+
+            /*
+            try {
+
+
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+            */
+        } else {
+                /*
+                 * If no resolution is available, display a dialog to the
+                 * user with the error.
+                 */
+
+            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+        //Enviar broadcast
+        //verificarRadio();
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    /*
+    //Esto lo debe hacer cada poco tiempo
+    private void verificarRadio() {
 
+        int radio = 100; //Debe ser configurable, y por evento
+
+        for(Recordatorio recordatorio : recordatoriosActivos) {
+            Lugar lugar = recordatorio.getLugar();
+            float[] distance = new float[2];
+            Location.distanceBetween(lugar.getLatitud(), lugar.getLongitud(),
+                    currentLatitude, currentLongitude, distance);
+
+            if(distance[0] < radio){
+                Log.d("verificarRadio", "Inside, distance from center: " + distance[0] + " radius: " + radio);
+                presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, getString(R.string.notification_title), getString(R.string.notification_information));
+            }
+        }
     }
+    */
 
     /*
     private void presentNotification(int visibility, int icon, String title, String text) {

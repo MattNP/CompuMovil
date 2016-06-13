@@ -1,17 +1,16 @@
 package co.edu.udea.compumovil.gr4.geolaps;
 
-import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,17 +23,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,17 +41,11 @@ import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        //GoogleApiClient.ConnectionCallbacks,
-        //GoogleApiClient.OnConnectionFailedListener,
-        //LocationListener,
         OnMapReadyCallback,
         RecordatoriosFragment.OnListFragmentInteractionListener{
 
     private GoogleMap mMap;
 
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    //private GoogleApiClient mGoogleApiClient;
-    //private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
     private List<Recordatorio> recordatoriosActivos;
@@ -72,6 +57,13 @@ public class Dashboard extends AppCompatActivity
     public static final String CURRENT_LONGITUDE = "currentLongitude";
     public static final int REQUEST_NUEVO = 2606;
 
+    private BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //updateGUI(intent);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +72,6 @@ public class Dashboard extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         dbHelper = new DBHelper(this);
-        db = dbHelper.getWritableDatabase();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -105,22 +96,7 @@ public class Dashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        /*
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                // The next two lines tell the new client that “this” current class will handle connection stuff
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
-                .addApi(LocationServices.API)
-                .build();
-
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-                */
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_mapa);
         mapFragment.getMapAsync(this);
 
@@ -130,6 +106,15 @@ public class Dashboard extends AppCompatActivity
         startService(intent);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
+
+                       /*
+                Cuando reciba el broadcast
+                            MarkerOptions mp = new MarkerOptions();
+            mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
+            mp.title("onConnected");
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 13));
+                */
 
     }
 
@@ -150,6 +135,8 @@ public class Dashboard extends AppCompatActivity
 
         recordatoriosActivos = new ArrayList<>();
 
+        db = dbHelper.getWritableDatabase();
+
         Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
                 null,
                 null,
@@ -157,6 +144,8 @@ public class Dashboard extends AppCompatActivity
                 null,
                 null,
                 null);
+
+        db.close();
 
         Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
 
@@ -188,6 +177,7 @@ public class Dashboard extends AppCompatActivity
             @Override
             public void onMapClick(LatLng point) {
                 // TODO Auto-generated method stub
+                //Quiza crear un recordatorio al presionar un punto del mapa
                 //lstLatLngs.add(point);
                 //mMap.clear();
                 //mMap.addMarker(new MarkerOptions().position(point));
@@ -209,14 +199,13 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        //Now lets connect to the API
-        //mGoogleApiClient.connect();
-
+        registerReceiver(br, new IntentFilter(IntentServiceMaps.BR));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(br);
         Log.v(this.getClass().getSimpleName(), "onPause()");
 
         /*
@@ -227,6 +216,22 @@ public class Dashboard extends AppCompatActivity
         }
         */
 
+    }
+
+    @Override
+    protected void onStop() {
+        try {
+            unregisterReceiver(br);
+        } catch (Exception e) {
+            // Receiver was probably already stopped in onPause()
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, IntentServiceMaps.class));
+        super.onDestroy();
     }
 
     /*
@@ -257,27 +262,7 @@ public class Dashboard extends AppCompatActivity
     */
 
 
-    /*
-    //Esto lo debe hacer cada poco tiempo
-    private void verificarRadio() {
 
-        Circle mCircle = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(currentLatitude, currentLongitude))
-                .radius(100));
-
-        for(Recordatorio recordatorio : recordatoriosActivos) {
-            Lugar lugar = recordatorio.getLugar();
-            float[] distance = new float[2];
-            Location.distanceBetween(lugar.getLatitud(), lugar.getLongitud(),
-                    mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
-
-            if(distance[0] < mCircle.getRadius()){
-                Log.d("verificarRadio", "Inside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius());
-            }
-        }
-    }
-
-    */
 
 
     /*
