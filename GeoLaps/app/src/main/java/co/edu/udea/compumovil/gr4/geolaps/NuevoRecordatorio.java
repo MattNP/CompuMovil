@@ -212,7 +212,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_MAP && data != null){
+        if(requestCode == REQUEST_MAP && data != null && data.hasExtra(MapActivity.LATITUD) && data.hasExtra(MapActivity.LONGITUD)){
             latitud = data.getDoubleExtra(MapActivity.LATITUD, 0);
             longitud = data.getDoubleExtra(MapActivity.LONGITUD, 0);
             String nombreLugar = "";

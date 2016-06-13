@@ -56,6 +56,7 @@ public class Dashboard extends AppCompatActivity
     public static final String CURRENT_LATITUDE = "currentLatitude";
     public static final String CURRENT_LONGITUDE = "currentLongitude";
     public static final int REQUEST_NUEVO = 2606;
+    public static final String RECORDATORIO_SELECCIONADO = "recordatorioSeleccionado";
 
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
@@ -123,7 +124,7 @@ public class Dashboard extends AppCompatActivity
         for(Recordatorio recordatorio : recordatoriosActivos) {
             Lugar lugar = recordatorio.getLugar();
             LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet("Lugar"));
+            mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet(lugar.getNombre()));
         }
     }
 
@@ -261,7 +262,31 @@ public class Dashboard extends AppCompatActivity
     }
     */
 
+<<<<<<< HEAD
 
+=======
+    /*
+    //Esto lo debe hacer cada poco tiempo
+    private void verificarRadio() {
+
+        //Hacer círculo al marcador no al usuario, un circulo por cada lugar. Buscar cómo hacer un círculo sin ubicarlo en el mapa
+
+        Circle mCircle = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(currentLatitude, currentLongitude))
+                .radius(100));
+
+        for(Recordatorio recordatorio : recordatoriosActivos) {
+            Lugar lugar = recordatorio.getLugar();
+            float[] distance = new float[2];
+            Location.distanceBetween(lugar.getLatitud(), lugar.getLongitud(),
+                    mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
+
+            if(distance[0] < mCircle.getRadius()){
+                Log.d("verificarRadio", "Inside, distance from center: " + distance[0] + " radius: " + mCircle.getRadius());
+            }
+        }
+    }
+>>>>>>> origin/master
 
 
 
@@ -386,8 +411,8 @@ public class Dashboard extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(Recordatorio item) {
         Intent intent = new Intent(this, RecordatorioActivity.class);
+        intent.putExtra(RECORDATORIO_SELECCIONADO, item);
         startActivity(intent);
-        Toast.makeText(this, "Presionó un recordatorio", Toast.LENGTH_SHORT).show();
     }
 
     @Override
