@@ -2,13 +2,18 @@ package co.edu.udea.compumovil.gr4.geolaps;
 
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,7 +44,7 @@ public class IntentServiceMaps extends IntentService implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    //private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public final static String BR = "co.edu.udea.compumovil.gr4.geolaps";
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -142,9 +147,10 @@ public class IntentServiceMaps extends IntentService implements
     @Override
     public void onLocationChanged(Location location) {
         Log.d("verificarRadio", "cambio ubicación");
+
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
-        //Enviar broadcast
+
         intentBroadcast.putExtra(Dashboard.CURRENT_LATITUDE,currentLatitude);
         intentBroadcast.putExtra(Dashboard.CURRENT_LONGITUDE,currentLongitude);
         sendBroadcast(intentBroadcast);
@@ -169,7 +175,7 @@ public class IntentServiceMaps extends IntentService implements
             if(distance[0] < radio){
                 Log.d("verificarRadio", "Inside " + recordatorio.getNombre() + ". Distancia: " + distance[0]);
                 Toast.makeText(this, "Inside " + recordatorio.getNombre(), Toast.LENGTH_SHORT).show();
-                //presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, getString(R.string.notification_title), getString(R.string.notification_information));
+                presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, "Notificacion", getString(R.string.notification_information));
             }
         }
     }
@@ -206,7 +212,6 @@ public class IntentServiceMaps extends IntentService implements
         return recordatoriosActivos;
     }
 
-    /*
     private void presentNotification(int visibility, int icon, String title, String text) {
         Intent intent = new Intent(this, Dashboard.class);
         intent.setAction("android.intent.action.MAIN");
@@ -231,5 +236,4 @@ public class IntentServiceMaps extends IntentService implements
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
     }
-    */
 }
