@@ -9,4 +9,10 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
 
+    <color name="recordatorio_1">#ff0000</color>
+    <color name="recordatorio_2">#7f00ff</color>
+    <color name="recordatorio_3">#ffff00</color>
+    <color name="recordatorio_4">#009900</color>
+    <color name="recordatorio_5">#008fff</color>
+
 </resources>

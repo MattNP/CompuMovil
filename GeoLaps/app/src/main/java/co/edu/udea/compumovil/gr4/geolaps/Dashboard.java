@@ -51,9 +51,6 @@ public class Dashboard extends AppCompatActivity
     private double currentLongitude;
     private List<Recordatorio> recordatoriosActivos;
 
-    private DBHelper dbHelper;
-    private SQLiteDatabase db;
-
     public static final String CURRENT_LATITUDE = "currentLatitude";
     public static final String CURRENT_LONGITUDE = "currentLongitude";
     public static final int REQUEST_NUEVO = 2606;
@@ -67,9 +64,10 @@ public class Dashboard extends AppCompatActivity
             if(intent.hasExtra(CURRENT_LATITUDE) && intent.hasExtra(CURRENT_LONGITUDE)) {
                 currentLatitude = intent.getDoubleExtra(CURRENT_LATITUDE, 0);
                 currentLongitude = intent.getDoubleExtra(CURRENT_LONGITUDE, 0);
-                Log.d("onHandleIntent", currentLatitude + "lat");
+                Log.d("onHandleIntent", currentLatitude + ", " + currentLongitude);
+
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(currentLatitude, currentLongitude), 13));
+                        new LatLng(currentLatitude, currentLongitude), 16));
             }
         }
     };
@@ -81,8 +79,6 @@ public class Dashboard extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dbHelper = new DBHelper(this);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,13 +89,12 @@ public class Dashboard extends AppCompatActivity
                 intent.putExtra(CURRENT_LATITUDE, currentLatitude);
                 intent.putExtra(CURRENT_LONGITUDE, currentLongitude);
                 startActivityForResult(intent, REQUEST_NUEVO);
-
             }
         });
 
-        Intent intent = new Intent(this, IntentServiceMaps.class);
+        Intent intent = new Intent(this, ServiceMap.class);
         startService(intent);
-        recordatoriosActivos = getRecordatoriosActivos();
+        recordatoriosActivos = DBUtil.getRecordatoriosActivos(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -113,16 +108,6 @@ public class Dashboard extends AppCompatActivity
          SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_mapa);
         mapFragment.getMapAsync(this);
-
-
-                       /*
-                Cuando reciba el broadcast
-                            MarkerOptions mp = new MarkerOptions();
-            mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
-            mp.title("onConnected");
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()), 13));
-                */
 
     }
 
@@ -140,35 +125,6 @@ public class Dashboard extends AppCompatActivity
         return recordatoriosActivos;
     }
 
-    private List<Recordatorio> getRecordatoriosActivos() {
-
-        recordatoriosActivos = new ArrayList<>();
-
-        db = dbHelper.getWritableDatabase();
-
-        Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
-
-        if(cursorRecordatorio.moveToFirst()) {
-            do {
-                Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, this);
-                recordatoriosActivos.add(recordatorio);
-
-            } while(cursorRecordatorio.moveToNext());
-        }
-
-        db.close();
-
-        return recordatoriosActivos;
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -177,8 +133,6 @@ public class Dashboard extends AppCompatActivity
                 ||(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)){
 
             mMap.setMyLocationEnabled(true);
-
-
         }
 
 
@@ -212,10 +166,10 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        recordatoriosActivos = getRecordatoriosActivos();
+        recordatoriosActivos = DBUtil.getRecordatoriosActivos(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
-        registerReceiver(br, new IntentFilter(IntentServiceMaps.BR));
+        registerReceiver(br, new IntentFilter(ServiceMap.BR));
     }
 
     @Override
@@ -246,7 +200,7 @@ public class Dashboard extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(this, IntentServiceMaps.class));
+        stopService(new Intent(this, ServiceMap.class));
         super.onDestroy();
     }
 

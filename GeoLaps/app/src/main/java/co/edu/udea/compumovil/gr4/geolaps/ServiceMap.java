@@ -1,17 +1,20 @@
 package co.edu.udea.compumovil.gr4.geolaps;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -23,28 +26,17 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
 import co.edu.udea.compumovil.gr4.geolaps.database.DBUtil;
-import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
-public class IntentServiceMaps extends IntentService implements
+public class ServiceMap extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    //private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public final static String BR = "co.edu.udea.compumovil.gr4.geolaps";
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -54,65 +46,69 @@ public class IntentServiceMaps extends IntentService implements
     private double currentLatitude;
     private double currentLongitude;
 
-    public IntentServiceMaps() {
-        super("IntentServiceMaps");
+    public ServiceMap() {
     }
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-
-        Log.d("onHandleIntent", "Antes");
+    public int onStartCommand(final Intent intent, int flags, int startId) {
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                // The next two lines tell the new client that “this” current class will handle connection stuff
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
                 .addApi(LocationServices.API)
                 .build();
 
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-        Log.d("onHandleIntent", "Start");
+                .setInterval(90 * 1000)        // 90 seconds, in milliseconds
+                .setFastestInterval(60 * 1000); // 60 seconds, in milliseconds
 
         mGoogleApiClient.connect();
 
         intentBroadcast=new Intent(BR);
 
+        return START_STICKY;
     }
 
     public void onConnected(Bundle bundle) {
 
-        Log.d("onHandleIntent", "I got maps at first");
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        if (location != null) {
 
-        } else {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
 
-            Log.d("onHandleIntent", "I got maps");
+            Log.d("ServiceMaps", "onConnected: " + currentLatitude + ", " + currentLongitude);
 
             intentBroadcast.putExtra(Dashboard.CURRENT_LATITUDE, currentLatitude);
             intentBroadcast.putExtra(Dashboard.CURRENT_LONGITUDE, currentLongitude);
-            Log.d("onHandleIntent", "broadcast");
             sendBroadcast(intentBroadcast);
 
             verificarRadio();
         }
     }
 
-    public void onConnectionSuspended(int i) {}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    public void onConnectionSuspended(int i) {
+        Log.d("ServiceMaps", "onConnectionSuspended: " + currentLatitude + ", " + currentLongitude);
+    }
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -146,10 +142,11 @@ public class IntentServiceMaps extends IntentService implements
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("verificarRadio", "cambio ubicación");
 
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
+
+        Log.d("ServiceMaps", "onLocation: " + currentLatitude + ", " + currentLongitude);
 
         intentBroadcast.putExtra(Dashboard.CURRENT_LATITUDE,currentLatitude);
         intentBroadcast.putExtra(Dashboard.CURRENT_LONGITUDE,currentLongitude);
@@ -160,11 +157,9 @@ public class IntentServiceMaps extends IntentService implements
     //Esto lo debe hacer cada poco tiempo
     private void verificarRadio() {
 
-        Log.d("verificarRadio", "Inside the method");
-
         int radio = 100; //Debe ser configurable, y por evento
 
-        List<Recordatorio> recordatoriosActivos = getRecordatoriosActivos();
+        List<Recordatorio> recordatoriosActivos = DBUtil.getRecordatoriosActivos(this);
 
         for(Recordatorio recordatorio : recordatoriosActivos) {
             Lugar lugar = recordatorio.getLugar();
@@ -175,41 +170,9 @@ public class IntentServiceMaps extends IntentService implements
             if(distance[0] < radio){
                 Log.d("verificarRadio", "Inside " + recordatorio.getNombre() + ". Distancia: " + distance[0]);
                 Toast.makeText(this, "Inside " + recordatorio.getNombre(), Toast.LENGTH_SHORT).show();
-                presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, "Notificacion", getString(R.string.notification_information));
+                presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, "Recuerda que debes ir a " + recordatorio.getNombre()  , recordatorio.getDescripcion() );
             }
         }
-    }
-
-    private List<Recordatorio> getRecordatoriosActivos() {
-
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        List<Recordatorio> recordatoriosActivos = new ArrayList<>();
-
-        db = dbHelper.getWritableDatabase();
-
-        Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
-
-        if(cursorRecordatorio.moveToFirst()) {
-            do {
-                Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, this);
-                recordatoriosActivos.add(recordatorio);
-
-            } while(cursorRecordatorio.moveToNext());
-        }
-
-        db.close();
-
-        return recordatoriosActivos;
     }
 
     private void presentNotification(int visibility, int icon, String title, String text) {

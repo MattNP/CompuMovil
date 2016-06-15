@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
@@ -58,5 +61,34 @@ public class DBUtil {
         }
 
         return lugar;
+    }
+
+    public static List<Recordatorio> getRecordatoriosActivos(Context context) {
+
+        List<Recordatorio>recordatoriosActivos = new ArrayList<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        Cursor cursorRecordatorio = db.query(GeoLapsContract.TABLE_RECORDATORIO,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        Log.d("getRecordatorio", "recordatorios: " + Integer.toString(cursorRecordatorio.getCount()));
+
+        if(cursorRecordatorio.moveToFirst()) {
+            do {
+                    Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, context);
+                    recordatoriosActivos.add(recordatorio);
+
+                } while (cursorRecordatorio.moveToNext());
+        }
+
+        db.close();
+        return recordatoriosActivos;
     }
 }

@@ -126,18 +126,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(busqueda != null && !busqueda.equals("")) {
             Geocoder geocoder = new Geocoder(this);
             try {
-                List<Address> listaLugares = geocoder.getFromLocationName(busqueda, 1);
+                List<Address> listaLugares = geocoder.getFromLocationName(busqueda, 20, lat-1, lng-1, lat+1, lng+1);
                 if(listaLugares.size() == 0) {
                     Toast.makeText(this, "No se pudo encontrar el lugar", Toast.LENGTH_SHORT);
 
                 } else {
-                    Address lugar = listaLugares.get(0);
-                    LatLng lugarLatLng = new LatLng(lugar.getLatitude(), lugar.getLongitude());
                     mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(lugarLatLng).title(lugar.getFeatureName()).snippet(lugar.getAddressLine(0)));
-                    lat = lugarLatLng.latitude;
-                    lng = lugarLatLng.longitude;
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lugarLatLng, 16));
+                    for(Address lugar : listaLugares) {
+                        LatLng lugarLatLng = new LatLng(lugar.getLatitude(), lugar.getLongitude());
+                        mMap.addMarker(new MarkerOptions().position(lugarLatLng).title(lugar.getFeatureName()).snippet(lugar.getAddressLine(0)));
+                        lat = lugarLatLng.latitude;
+                        lng = lugarLatLng.longitude;
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lugarLatLng, 16));
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
