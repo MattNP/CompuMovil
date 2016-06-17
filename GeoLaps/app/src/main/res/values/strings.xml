@@ -18,7 +18,7 @@
     <string name="lugares">Lugar</string>
 
     <string name="action_settings">Opciones</string>
-    <string name="title_activity_maps">Escoge un lugares</string>
+    <string name="title_activity_maps">Escoge o buscar un lugar</string>
 
     <string name="sign_out">sign out</string>
     <string name="signed_out">signed out</string>
@@ -58,6 +58,8 @@
     <string name="recordatorios_activos">Recordatorios Activos</string>
     <string name="recordatorios_vencidos">Recordatorios Vencidos</string>
     <string name="opciones">Opciones</string>
-
-
+    <string name="detalles_recordatorio">Detalles</string>
+    <string name="title_editar_recordatorio">Editar recordatorio</string>
+    <string name="lista_de_recordatorios">Lista de recordatorios</string>
+    <string name="geolaps_lista_recordatorios">Geolaps - Recordatorios</string>
 </resources>

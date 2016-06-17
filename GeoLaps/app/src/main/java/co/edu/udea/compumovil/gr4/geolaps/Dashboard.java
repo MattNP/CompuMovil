@@ -74,6 +74,9 @@ public class Dashboard extends AppCompatActivity
                 currentLatitude = intent.getDoubleExtra(CURRENT_LATITUDE, 0);
                 currentLongitude = intent.getDoubleExtra(CURRENT_LONGITUDE, 0);
                 Log.d("onHandleIntent", currentLatitude + ", " + currentLongitude);
+
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(currentLatitude, currentLongitude), 13));
             }
         }
     };
@@ -148,18 +151,6 @@ public class Dashboard extends AppCompatActivity
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-
-
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String provider = service.getBestProvider(criteria, false);
-        Location location = service.getLastKnownLocation(provider);
-        LatLng userLocation = new LatLng(location.getLatitude(),location.getLongitude());
-
-        Log.d("onMapReady", userLocation.latitude + ", " + userLocation.longitude);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                userLocation, 13));
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {

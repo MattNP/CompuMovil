@@ -38,6 +38,7 @@ public class MyRecordatorioRecyclerViewAdapter extends RecyclerView.Adapter<MyRe
         holder.mItem = mValues.get(position);
         //holder.mIdView.setText(String.valueOf(mValues.get(position).getId()));
         holder.mContentView.setText(mValues.get(position).getNombre());
+        holder.mLugarView.setText(mValues.get(position).getLugares().get(0).getNombre());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +59,7 @@ public class MyRecordatorioRecyclerViewAdapter extends RecyclerView.Adapter<MyRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        //public final TextView mIdView;
+        public final TextView mLugarView;
         public final TextView mContentView;
         public Recordatorio mItem;
 
@@ -67,6 +68,7 @@ public class MyRecordatorioRecyclerViewAdapter extends RecyclerView.Adapter<MyRe
             mView = view;
             //mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mLugarView = (TextView) view.findViewById(R.id.content_lugar);
         }
 
         @Override

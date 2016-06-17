@@ -8,12 +8,16 @@ import android.location.Geocoder;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,9 +40,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private double lat;
     private double lng;
-    private EditText txt_buscar;
+    private DelayAutoCompleteTextView txt_buscar;
 
     private String busqueda;
+
+    private Integer THRESHOLD = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +65,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
 
-        txt_buscar = (EditText)findViewById(R.id.txt_buscar);
+        txt_buscar = (DelayAutoCompleteTextView) findViewById(R.id.txt_buscar);
+        txt_buscar.setThreshold(THRESHOLD);
+        txt_buscar.setAdapter(new GeoAutoCompleteAdapter(this)); // 'this' is Activity instance
+
+        txt_buscar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
+                txt_buscar.setText(result.getAddress());
+            }
+        });
+
+        txt_buscar.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
     }
 
 
@@ -126,7 +159,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(busqueda != null && !busqueda.equals("")) {
             Geocoder geocoder = new Geocoder(this);
             try {
-                List<Address> listaLugares = geocoder.getFromLocationName(busqueda, 20, lat-1, lng-1, lat+1, lng+1);
+                List<Address> listaLugares = geocoder.getFromLocationName(busqueda, 1, lat-1, lng-1, lat+1, lng+1);
                 if(listaLugares.size() == 0) {
                     Toast.makeText(this, "No se pudo encontrar el lugar", Toast.LENGTH_SHORT);
 
@@ -137,7 +170,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         mMap.addMarker(new MarkerOptions().position(lugarLatLng).title(lugar.getFeatureName()).snippet(lugar.getAddressLine(0)));
                         lat = lugarLatLng.latitude;
                         lng = lugarLatLng.longitude;
-                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lugarLatLng, 16));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lugarLatLng, 16));
                     }
                 }
             } catch (IOException e) {

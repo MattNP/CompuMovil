@@ -1,13 +1,16 @@
 package co.edu.udea.compumovil.gr4.geolaps;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -82,6 +85,12 @@ public class RecordatorioActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.detalles_recordatorio) + " " + recordatorio.getNombre());
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.editarRecordatorio:
@@ -102,7 +111,12 @@ public class RecordatorioActivity extends AppCompatActivity {
         double lat = recordatorio.getLugares().get(0).getLatitud();
         double lng = recordatorio.getLugares().get(0).getLongitud();
 
-        String img_url = IMG_URL + "center=" + lat + "," + lng + "&zoom=16&size=310x310&markers=color:red|" + lat + "," + lng + "&mobile=true&sensor=false";
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+
+        String img_url = IMG_URL + "center=" + lat + "," + lng + "&zoom=16&size=640x640&markers=color:red|" + lat + "," + lng + "&mobile=true&sensor=false";
         Log.d("getImage", img_url);
         ImageRequest request = new ImageRequest(img_url,
                 new Response.Listener<Bitmap>() {
@@ -110,7 +124,7 @@ public class RecordatorioActivity extends AppCompatActivity {
                     public void onResponse(Bitmap bitmap) {
                         img_mapa.setImageBitmap(bitmap);
                     }
-                }, 50, 50, null, Bitmap.Config.RGB_565,
+                }, 640, 640, null, Bitmap.Config.RGB_565,
                 new Response.ErrorListener() {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("getImage", "Error cargando la imagen");
@@ -141,7 +155,16 @@ public class RecordatorioActivity extends AppCompatActivity {
             db.close();
             txt_nombre_recordatorio.setText(recordatorio.getNombre());
             txt_nombre_lugar_recordatorio.setText(recordatorio.getLugares().get(0).getNombre());
-            txt_fecha_limite.setText(Long.toString(recordatorio.getFecha_limite()));
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(recordatorio.getFecha_limite());
+
+            SimpleDateFormat formatoFecha = new SimpleDateFormat(NuevoRecordatorio.FORMATO_FECHA);
+            SimpleDateFormat formatoHora = new SimpleDateFormat(NuevoRecordatorio.FORMATO_HORA);
+
+            txt_hora_limite.setText(formatoHora.format(c.getTime()));
+            txt_fecha_limite.setText(formatoFecha.format(c.getTime()));
+
             txt_descripcion.setText(recordatorio.getDescripcion());
             Log.d("startActivityForResult",recordatorio.getNombre() + " Activity");
             onResume();

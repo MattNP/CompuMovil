@@ -30,7 +30,7 @@
                 android:layout_below="@id/nombreRecordatorio"
                 android:id="@+id/txt_titulo_recordatorio"
                 android:hint="@string/ej_pagar_factura"
-                android:capitalize="words" />
+                android:inputType="textCapWords"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -72,15 +72,21 @@
                 android:layout_alignParentEnd="true"
                 android:contentDescription="@string/map" />
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/lugares"
-                android:id="@+id/txt_lugar"
-                android:layout_toStartOf="@+id/img_mapa"
-                android:hint="@string/txt_buscar"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/img_mapa" />
+        <co.edu.udea.compumovil.gr4.geolaps.DelayAutoCompleteTextView
+            android:layout_below="@id/lugares"
+            android:id="@+id/txt_lugar"
+            android:layout_toStartOf="@+id/img_mapa"
+            android:hint="@string/txt_buscar"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/img_mapa"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:imeOptions="flagNoExtractUi|actionSearch"
+            android:inputType="none"
+            android:enabled="false"
+            android:textColor="@color/primary_text"
+            android:layout_gravity="center_vertical"
+            android:dropDownWidth="fill_parent" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -143,6 +149,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/descripcion"
                 android:id="@+id/txt_descripcion"
+                android:inputType="textCapWords"
                 android:hint="@string/opcional"/>
 
             <TextView
@@ -162,7 +169,7 @@
                 android:id="@+id/spinner_distancia_recordatorio"
                 android:layout_below="@+id/txt_distancia_recordatorio" />
 
-        </RelativeLayout>
+            </RelativeLayout>
 
     </ScrollView>
 
