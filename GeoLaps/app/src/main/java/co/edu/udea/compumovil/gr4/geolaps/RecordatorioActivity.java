@@ -1,33 +1,43 @@
 package co.edu.udea.compumovil.gr4.geolaps;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
 import co.edu.udea.compumovil.gr4.geolaps.database.DBUtil;
 import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
-import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
 public class RecordatorioActivity extends AppCompatActivity {
 
-    private TextView txt_nombre_recordatorio;
-    private TextView txt_nombre_lugar_recordatorio;
-    private TextView txt_fecha_limite;
-    private TextView txt_hora_limite;
-    private TextView txt_descripcion;
+    private TextView txt_nombre_recordatorio, txt_nombre_lugar_recordatorio, txt_hora_limite, txt_fecha_limite, txt_descripcion, txt_tipo_recordatorio;
+    private ImageView img_mapa;
     private Recordatorio recordatorio;
     public static final int REQUEST_EDITAR=0354;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
+
+    private static final String IMG_URL = "http://maps.google.com/maps/api/staticmap?";
 
 
     @Override
@@ -41,17 +51,27 @@ public class RecordatorioActivity extends AppCompatActivity {
         txt_fecha_limite = (TextView)findViewById(R.id.txt_fecha_limite);
         txt_hora_limite = (TextView)findViewById(R.id.txt_hora_limite);
         txt_descripcion = (TextView)findViewById(R.id.txt_descripcion_info);
+        txt_tipo_recordatorio = (TextView)findViewById(R.id.txt_tipo_recordatorio_info);
+        img_mapa = (ImageView)findViewById(R.id.img_mapa);
 
         if (intent.hasExtra(Dashboard.RECORDATORIO_SELECCIONADO)) {
             recordatorio = intent.getParcelableExtra(Dashboard.RECORDATORIO_SELECCIONADO);
             txt_nombre_recordatorio.setText(recordatorio.getNombre());
-            txt_nombre_lugar_recordatorio.setText(recordatorio.getLugar().getNombre());
-            txt_fecha_limite.setText(recordatorio.getFecha_limite());
-            txt_hora_limite.setText(recordatorio.getHora_limite());
+            txt_nombre_lugar_recordatorio.setText(recordatorio.getLugares().get(0).getNombre());
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(recordatorio.getFecha_limite());
+
+            SimpleDateFormat formatoFecha = new SimpleDateFormat(NuevoRecordatorio.FORMATO_FECHA);
+            SimpleDateFormat formatoHora = new SimpleDateFormat(NuevoRecordatorio.FORMATO_HORA);
+
+            txt_hora_limite.setText(formatoHora.format(c.getTime()));
+            txt_fecha_limite.setText(formatoFecha.format(c.getTime()));
             txt_descripcion.setText(recordatorio.getDescripcion());
+            txt_tipo_recordatorio.setText(recordatorio.getTipo().getTipo());
         }
         dbHelper = new DBHelper(this);
-        //http://maps.google.com/maps/api/staticmap?center=6.2856213,-75.5580297&zoom=16&size=310x310&markers=color:red|6.2856213,-75.5580297&mobile=true&sensor=false
+        getImage();
     }
 
     @Override
@@ -75,6 +95,31 @@ public class RecordatorioActivity extends AppCompatActivity {
         }
     }
 
+    public void getImage() {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        double lat = recordatorio.getLugares().get(0).getLatitud();
+        double lng = recordatorio.getLugares().get(0).getLongitud();
+
+        String img_url = IMG_URL + "center=" + lat + "," + lng + "&zoom=16&size=310x310&markers=color:red|" + lat + "," + lng + "&mobile=true&sensor=false";
+        Log.d("getImage", img_url);
+        ImageRequest request = new ImageRequest(img_url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap bitmap) {
+                        img_mapa.setImageBitmap(bitmap);
+                    }
+                }, 50, 50, null, Bitmap.Config.RGB_565,
+                new Response.ErrorListener() {
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("getImage", "Error cargando la imagen");
+                    }
+                });
+        // Access the RequestQueue through your singleton class.
+        queue.add(request);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -95,9 +140,8 @@ public class RecordatorioActivity extends AppCompatActivity {
             }
             db.close();
             txt_nombre_recordatorio.setText(recordatorio.getNombre());
-            txt_nombre_lugar_recordatorio.setText(recordatorio.getLugar().getNombre());
-            txt_fecha_limite.setText(recordatorio.getFecha_limite());
-            txt_hora_limite.setText(recordatorio.getHora_limite());
+            txt_nombre_lugar_recordatorio.setText(recordatorio.getLugares().get(0).getNombre());
+            txt_fecha_limite.setText(Long.toString(recordatorio.getFecha_limite()));
             txt_descripcion.setText(recordatorio.getDescripcion());
             Log.d("startActivityForResult",recordatorio.getNombre() + " Activity");
             onResume();

@@ -3,15 +3,22 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/my_place"
+        android:id="@+id/recordatorios_activos"
+        android:icon="@drawable/ic_menu_location"
+        android:title="@string/recordatorios_activos" />
+        <item
+            android:id="@+id/recordatorios_vencidos"
             android:icon="@drawable/ic_menu_location"
-            android:title="@string/recordatorios" />
+            android:title="@string/recordatorios_vencidos" />
         <item
             android:id="@+id/perfil_usuario"
             android:icon="@android:drawable/ic_menu_crop"
             android:title="@string/perfil_usuario" />
 
-
+        <item
+            android:id="@+id/opciones"
+            android:icon="@android:drawable/ic_menu_crop"
+            android:title="@string/opciones" />
     </group>
 
 </menu>

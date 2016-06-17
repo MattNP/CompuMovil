@@ -29,12 +29,12 @@ public class GeoLapsContract {
         public static final String ID = BaseColumns._ID;
         public static final String UID = "usuarioID";
         public static final String TIPO = "tipo";
-        public static final String LUGAR = "lugar";
         public static final String NOMBRE = "nombre";
         public static final String FECHA_LIMITE = "fecha_limite";
-        public static final String HORA_LIMITE = "hora_limite";
         public static final String TIMESTAMP = "timestamp";
         public static final String DESCRIPCION = "descripcion";
+        public static final String COLOR = "color";
+        public static final String ADENTRO = "adentro";
     }
 
     public class ColumnaTipoRecordatorio {
@@ -45,13 +45,10 @@ public class GeoLapsContract {
     public class ColumnaLugar {
         public static final String ID = BaseColumns._ID;
         public static final String TIPO = "tipo";
+        public static final String RECORDATORIO = "rid";
         public static final String NOMBRE = "nombre";
-        public static final String TELEFONO = "telefono";
-        public static final String CORREO = "correo";
         public static final String LATITUD = "latitud";
         public static final String LONGITUD = "longitud";
-        public static final String FOTO = "foto";
-        public static final String DIRECCION = "direccion";
     }
 
     public class ColumnaTipoLugar {

@@ -84,7 +84,7 @@
         <activity android:name=".RecordatorioActivity" />
 
         <service
-            android:name=".ServiceMap"
+            android:name=".ServiceMaps"
             android:enabled="true"
             android:exported="false"></service>
     </application>

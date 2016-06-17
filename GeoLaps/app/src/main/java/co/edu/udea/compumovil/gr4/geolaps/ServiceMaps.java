@@ -4,17 +4,13 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -29,10 +25,11 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 
 import co.edu.udea.compumovil.gr4.geolaps.database.DBUtil;
+import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
-public class ServiceMap extends Service implements
+public class ServiceMaps extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -46,7 +43,7 @@ public class ServiceMap extends Service implements
     private double currentLatitude;
     private double currentLongitude;
 
-    public ServiceMap() {
+    public ServiceMaps() {
     }
 
     @Override
@@ -162,15 +159,21 @@ public class ServiceMap extends Service implements
         List<Recordatorio> recordatoriosActivos = DBUtil.getRecordatoriosActivos(this);
 
         for(Recordatorio recordatorio : recordatoriosActivos) {
-            Lugar lugar = recordatorio.getLugar();
+            Lugar lugar = recordatorio.getLugares().get(0);
             float[] distance = new float[2];
             Location.distanceBetween(lugar.getLatitud(), lugar.getLongitud(),
                     currentLatitude, currentLongitude, distance);
 
             if(distance[0] < radio){
+                if(recordatorio.getAdentro() == 0) {
+                    presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, "Recuerda que debes ir a " + recordatorio.getNombre(), recordatorio.getDescripcion() );
+                    DBUtil.actualizarEstado(recordatorio.getId(), 1, this);
+                }
                 Log.d("verificarRadio", "Inside " + recordatorio.getNombre() + ". Distancia: " + distance[0]);
-                Toast.makeText(this, "Inside " + recordatorio.getNombre(), Toast.LENGTH_SHORT).show();
-                presentNotification(Notification.VISIBILITY_PUBLIC, android.R.drawable.ic_dialog_alert, "Recuerda que debes ir a " + recordatorio.getNombre()  , recordatorio.getDescripcion() );
+            } else {
+                if(recordatorio.getAdentro() == 1) {
+                    DBUtil.actualizarEstado(recordatorio.getId(), 0, this);
+                }
             }
         }
     }

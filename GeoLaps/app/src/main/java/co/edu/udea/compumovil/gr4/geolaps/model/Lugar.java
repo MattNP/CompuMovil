@@ -12,7 +12,6 @@ public class Lugar implements Parcelable {
     private double latitud;
     private double longitud;
     private String nombre;
-    private String tipo;
 
     public int getId() {
         return id;
@@ -46,14 +45,9 @@ public class Lugar implements Parcelable {
         this.nombre = nombre;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public Lugar() {
     }
-
 
     @Override
     public int describeContents() {
@@ -66,10 +60,6 @@ public class Lugar implements Parcelable {
         dest.writeDouble(this.latitud);
         dest.writeDouble(this.longitud);
         dest.writeString(this.nombre);
-        dest.writeString(this.tipo);
-    }
-
-    public Lugar() {
     }
 
     protected Lugar(Parcel in) {
@@ -77,10 +67,9 @@ public class Lugar implements Parcelable {
         this.latitud = in.readDouble();
         this.longitud = in.readDouble();
         this.nombre = in.readString();
-        this.tipo = in.readString();
     }
 
-    public static final Parcelable.Creator<Lugar> CREATOR = new Parcelable.Creator<Lugar>() {
+    public static final Creator<Lugar> CREATOR = new Creator<Lugar>() {
         @Override
         public Lugar createFromParcel(Parcel source) {
             return new Lugar(source);

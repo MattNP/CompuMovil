@@ -13,9 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
+        android:text="nombreRecordatorio"
         android:id="@+id/txt_nombre_recordatorio"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/img_mapa"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="lugarRecordatorio"
         android:id="@+id/txt_lugar_recordatorio"
         android:layout_below="@+id/txt_nombre_recordatorio"
         android:layout_alignParentLeft="true"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="horaLimite"
         android:id="@+id/txt_hora_limite"
         android:layout_below="@+id/txt_lugar_recordatorio"
         android:layout_alignParentLeft="true"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="fechaLimite"
         android:id="@+id/txt_fecha_limite"
         android:layout_below="@+id/txt_hora_limite"
         android:layout_alignParentLeft="true"
@@ -53,9 +53,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="descripcion"
         android:id="@+id/txt_descripcion_info"
+        android:layout_below="@+id/txt_tipo_recordatorio_info"
+        android:layout_alignRight="@+id/txt_fecha_limite"
+        android:layout_alignEnd="@+id/txt_fecha_limite" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="tipoRecordatorio"
+        android:id="@+id/txt_tipo_recordatorio_info"
+        android:layout_below="@+id/txt_fecha_limite"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_mapa"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/txt_fecha_limite" />
+        android:maxHeight="250px"
+        android:maxWidth="250px"
+        android:longClickable="false"
+        android:minHeight="250px"
+        android:minWidth="250px" />
 </RelativeLayout>

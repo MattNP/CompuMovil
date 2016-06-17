@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,22 +22,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import co.edu.udea.compumovil.gr4.geolaps.database.DBHelper;
 import co.edu.udea.compumovil.gr4.geolaps.database.DBUtil;
-import co.edu.udea.compumovil.gr4.geolaps.database.GeoLapsContract;
 import co.edu.udea.compumovil.gr4.geolaps.model.Lugar;
 import co.edu.udea.compumovil.gr4.geolaps.model.Recordatorio;
 
@@ -49,7 +47,7 @@ public class Dashboard extends AppCompatActivity
 
     private double currentLatitude;
     private double currentLongitude;
-    private List<Recordatorio> recordatoriosActivos;
+    private List<Recordatorio> recordatorios;
 
     public static final String CURRENT_LATITUDE = "currentLatitude";
     public static final String CURRENT_LONGITUDE = "currentLongitude";
@@ -58,6 +56,17 @@ public class Dashboard extends AppCompatActivity
     public static final String RECORDATORIO_SELECCIONADO = "recordatorioSeleccionado";
     public static final String RECORDATORIO_ELIMINADO = "recordatorioEliminado";
 
+    private float[] colores = {BitmapDescriptorFactory.HUE_AZURE,
+            BitmapDescriptorFactory.HUE_AZURE,
+            BitmapDescriptorFactory.HUE_CYAN,
+            BitmapDescriptorFactory.HUE_GREEN,
+            BitmapDescriptorFactory.HUE_MAGENTA,
+            BitmapDescriptorFactory.HUE_ORANGE,
+            BitmapDescriptorFactory.HUE_RED,
+            BitmapDescriptorFactory.HUE_ROSE,
+            BitmapDescriptorFactory.HUE_VIOLET,
+            BitmapDescriptorFactory.HUE_YELLOW};
+
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -65,9 +74,6 @@ public class Dashboard extends AppCompatActivity
                 currentLatitude = intent.getDoubleExtra(CURRENT_LATITUDE, 0);
                 currentLongitude = intent.getDoubleExtra(CURRENT_LONGITUDE, 0);
                 Log.d("onHandleIntent", currentLatitude + ", " + currentLongitude);
-
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(currentLatitude, currentLongitude), 16));
             }
         }
     };
@@ -92,9 +98,10 @@ public class Dashboard extends AppCompatActivity
             }
         });
 
-        Intent intent = new Intent(this, ServiceMap.class);
+        Intent intent = new Intent(this, ServiceMaps.class);
+        Log.d("onCreate", "iniciando servicio");
         startService(intent);
-        recordatoriosActivos = DBUtil.getRecordatoriosActivos(this);
+        recordatorios = DBUtil.getRecordatoriosActivos(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -113,16 +120,19 @@ public class Dashboard extends AppCompatActivity
 
     private void ubicarMarcadores() {
         mMap.clear();
-        for(Recordatorio recordatorio : recordatoriosActivos) {
-            Lugar lugar = recordatorio.getLugar();
+        for(Recordatorio recordatorio : recordatorios) {
+            Lugar lugar = recordatorio.getLugares().get(0);
             LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet(lugar.getNombre()));
+
+            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(recordatorio.getNombre()).snippet(lugar.getNombre()).icon(BitmapDescriptorFactory
+                    .defaultMarker(colores[recordatorio.getColor()]));
+            mMap.addMarker(markerOptions);
             Log.d("UbicarMarcadores", "lat" + lugar.getLatitud() + "Lon" + lugar.getLongitud());
         }
     }
 
     public List<Recordatorio> getRecordatorios() {
-        return recordatoriosActivos;
+        return recordatorios;
     }
 
     @Override
@@ -139,7 +149,22 @@ public class Dashboard extends AppCompatActivity
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
 
+
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String provider = service.getBestProvider(criteria, false);
+        Location location = service.getLastKnownLocation(provider);
+        LatLng userLocation = new LatLng(location.getLatitude(),location.getLongitude());
+
+        Log.d("onMapReady", userLocation.latitude + ", " + userLocation.longitude);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                userLocation, 13));
+
+
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+
 
             @Override
             public void onMapClick(LatLng point) {
@@ -166,10 +191,10 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        recordatoriosActivos = DBUtil.getRecordatoriosActivos(this);
+        recordatorios = DBUtil.getRecordatoriosActivos(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.recordatoriosContent,new RecordatoriosFragment()).commit();
-        registerReceiver(br, new IntentFilter(ServiceMap.BR));
+        registerReceiver(br, new IntentFilter(ServiceMaps.BR));
     }
 
     @Override
@@ -200,7 +225,7 @@ public class Dashboard extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(this, ServiceMap.class));
+        stopService(new Intent(this, ServiceMaps.class));
         super.onDestroy();
     }
 
@@ -259,9 +284,9 @@ public class Dashboard extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -272,14 +297,17 @@ public class Dashboard extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.perfil_usuario) {
-
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-
-        } else if (id == R.id.my_place) {
-
+        switch (id) {
+            case R.id.perfil_usuario:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            case R.id.recordatorios_activos:
+                return true;
+            case R.id.recordatorios_vencidos:
+                return true;
+            case R.id.opciones:
+                return true;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -315,9 +343,9 @@ public class Dashboard extends AppCompatActivity
 
                 if (cursorRecordatorio.moveToFirst()) {
                     Recordatorio recordatorio = DBUtil.getRecordatorioFromCursor(cursorRecordatorio, this);
-                    recordatoriosActivos.add(recordatorio);
+                    recordatorios.add(recordatorio);
 
-                    Lugar lugar = recordatorio.getLugar();
+                    Lugar lugar = recordatorio.getLugares();
                     LatLng latLng = new LatLng(lugar.getLatitud(), lugar.getLongitud());
                     mMap.addMarker(new MarkerOptions().position(latLng));
 

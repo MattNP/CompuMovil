@@ -57,51 +57,28 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate with SQL: " + sqlTipoRecordatorio);
         db.execSQL(sqlTipoRecordatorio);
 
-        /* Lugar con todos los datos completos
-
         String sqlLugar = String.format("create table %s " +
                         "(%s integer primary key autoincrement, " +
                         "%s integer, " +
-                        "%s text, " +
-                        "%s text, " +
-                        "%s text, " +
-                        "%s double, " +
-                        "%s double, " +
-                        "%s blob, " +
-                        "%s text, " +
-                        "FOREIGN KEY(%s) REFERENCES %s(%s))",
-                GeoLapsContract.TABLE_LUGAR,
-                GeoLapsContract.ColumnaLugar.ID,
-                GeoLapsContract.ColumnaLugar.TIPO,
-                GeoLapsContract.ColumnaLugar.NOMBRE,
-                GeoLapsContract.ColumnaLugar.TELEFONO,
-                GeoLapsContract.ColumnaLugar.CORREO,
-                GeoLapsContract.ColumnaLugar.LATITUD,
-                GeoLapsContract.ColumnaLugar.LONGITUD,
-                GeoLapsContract.ColumnaLugar.FOTO,
-                GeoLapsContract.ColumnaLugar.DIRECCION,
-                GeoLapsContract.ColumnaLugar.TIPO,
-                GeoLapsContract.TABLE_TIPO_LUGAR,
-                GeoLapsContract.ColumnaTipoLugar.ID);
-
-                */
-
-        String sqlLugar = String.format("create table %s " +
-                        "(%s integer primary key autoincrement, " +
                         "%s integer, " +
                         "%s text, " +
                         "%s double, " +
                         "%s double, " +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s), " +
                         "FOREIGN KEY(%s) REFERENCES %s(%s))",
                 GeoLapsContract.TABLE_LUGAR,
                 GeoLapsContract.ColumnaLugar.ID,
                 GeoLapsContract.ColumnaLugar.TIPO,
+                GeoLapsContract.ColumnaLugar.RECORDATORIO,
                 GeoLapsContract.ColumnaLugar.NOMBRE,
                 GeoLapsContract.ColumnaLugar.LATITUD,
                 GeoLapsContract.ColumnaLugar.LONGITUD,
                 GeoLapsContract.ColumnaLugar.TIPO,
                 GeoLapsContract.TABLE_TIPO_LUGAR,
-                GeoLapsContract.ColumnaTipoLugar.ID);
+                GeoLapsContract.ColumnaTipoLugar.ID,
+                GeoLapsContract.ColumnaLugar.RECORDATORIO,
+                GeoLapsContract.TABLE_RECORDATORIO,
+                GeoLapsContract.ColumnaRecordatorio.ID);
 
         Log.d(TAG, "onCreate with SQL: " + sqlLugar);
         db.execSQL(sqlLugar);
@@ -111,34 +88,30 @@ public class DBHelper extends SQLiteOpenHelper {
                         "(%s integer primary key autoincrement, " +
                         "%s integer, " +
                         "%s integer, " +
-                        "%s integer, " +
                         "%s text, " +
-                        "%s date, " +
-                        "%s time, " +
+                        "%s datetime, " +
                         "%s datetime, " +
                         "%s text, " +
-                        "FOREIGN KEY(%s) REFERENCES %s(%s), " +
+                        "%s integer, " +
+                        "%s integer, " +
                         "FOREIGN KEY(%s) REFERENCES %s(%s), " +
                         "FOREIGN KEY(%s) REFERENCES %s(%s))",
                 GeoLapsContract.TABLE_RECORDATORIO,
                 GeoLapsContract.ColumnaRecordatorio.ID,
                 GeoLapsContract.ColumnaRecordatorio.UID,
                 GeoLapsContract.ColumnaRecordatorio.TIPO,
-                GeoLapsContract.ColumnaRecordatorio.LUGAR,
                 GeoLapsContract.ColumnaRecordatorio.NOMBRE,
                 GeoLapsContract.ColumnaRecordatorio.FECHA_LIMITE,
-                GeoLapsContract.ColumnaRecordatorio.HORA_LIMITE,
                 GeoLapsContract.ColumnaRecordatorio.TIMESTAMP,
                 GeoLapsContract.ColumnaRecordatorio.DESCRIPCION,
+                GeoLapsContract.ColumnaRecordatorio.COLOR,
+                GeoLapsContract.ColumnaRecordatorio.ADENTRO,
                 GeoLapsContract.ColumnaRecordatorio.UID,
                 GeoLapsContract.TABLE_USUARIO,
                 GeoLapsContract.ColumnaUsuario.ID,
                 GeoLapsContract.ColumnaRecordatorio.TIPO,
                 GeoLapsContract.TABLE_TIPO_RECORDATORIO,
-                GeoLapsContract.ColumnaTipoRecordatorio.ID,
-                GeoLapsContract.ColumnaRecordatorio.LUGAR,
-                GeoLapsContract.TABLE_LUGAR,
-                GeoLapsContract.ColumnaLugar.ID);
+                GeoLapsContract.ColumnaTipoRecordatorio.ID);
 
         Log.d(TAG, "onCreate with SQL: " + sqlRecordatorio);
         db.execSQL(sqlRecordatorio);

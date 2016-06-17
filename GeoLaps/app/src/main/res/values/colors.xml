@@ -15,4 +15,12 @@
     <color name="recordatorio_4">#009900</color>
     <color name="recordatorio_5">#008fff</color>
 
+    <array name="recordatorios">
+        <item>@color/recordatorio_1</item>
+        <item>@color/recordatorio_2</item>
+        <item>@color/recordatorio_3</item>
+        <item>@color/recordatorio_4</item>
+        <item>@color/recordatorio_5</item>
+    </array>
+
 </resources>
