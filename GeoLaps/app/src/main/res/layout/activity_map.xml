@@ -14,17 +14,13 @@
         android:layout_height="wrap_content"
         android:weightSum="1">
 
-        <co.edu.udea.compumovil.gr4.geolaps.DelayAutoCompleteTextView
+        <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/txt_buscar"
             android:layout_weight="1"
-            android:hint="@string/txt_buscar"
-            android:imeOptions="flagNoExtractUi|actionSearch"
-            android:inputType="textCapSentences"
-            android:textColor="@color/primary_text"
-            android:dropDownWidth="fill_parent"
-            />
+            android:inputType="textCapWords"
+            android:hint="@string/txt_buscar" />
 
         <Button
             style="?android:attr/buttonStyleSmall"

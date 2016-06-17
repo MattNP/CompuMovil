@@ -62,4 +62,5 @@
     <string name="title_editar_recordatorio">Editar recordatorio</string>
     <string name="lista_de_recordatorios">Lista de recordatorios</string>
     <string name="geolaps_lista_recordatorios">Geolaps - Recordatorios</string>
+    <string name="fecha_invalida">La fecha no puede ser anterior a la actual</string>
 </resources>

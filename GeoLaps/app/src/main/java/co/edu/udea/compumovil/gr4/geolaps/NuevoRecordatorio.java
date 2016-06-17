@@ -9,14 +9,11 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -48,7 +45,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
 
     private Spinner spinner_tipo_recordatorio;
     private EditText txt_titulo, txt_descripcion;
-    private TextView txt_fecha, txt_hora;
+    private TextView txt_fecha, txt_hora, txt_lugar;
     private SimpleDateFormat formatoFecha = new SimpleDateFormat(FORMATO_FECHA);
     private SimpleDateFormat formatoHora = new SimpleDateFormat(FORMATO_HORA);
     private final Calendar calendar = Calendar.getInstance();
@@ -57,9 +54,6 @@ public class NuevoRecordatorio extends AppCompatActivity {
     private double latitud, longitud, latitudActual, longitudActual;
     private String titulo, lugar, descripcion, fecha, hora, timestamp, fecha_limite;
     private Recordatorio recordatorio;
-
-    private Integer THRESHOLD = 2;
-    private DelayAutoCompleteTextView txt_lugar;
 
 
 
@@ -85,7 +79,10 @@ public class NuevoRecordatorio extends AppCompatActivity {
         */
 
         txt_titulo = (EditText)findViewById(R.id.txt_titulo_recordatorio);
+        txt_lugar = (TextView)findViewById(R.id.txt_lugar);
         txt_descripcion = (EditText)findViewById(R.id.txt_descripcion);
+
+        calendar.add(Calendar.DAY_OF_MONTH,+1);
 
         txt_fecha = (TextView)findViewById(R.id.txt_fecha);
         txt_fecha.setText(formatoFecha.format(calendar.getTime()));
@@ -96,8 +93,6 @@ public class NuevoRecordatorio extends AppCompatActivity {
         timePickerFragment = new TimePickerFragment();
         recordatorio=null;
         Intent intent = getIntent();
-
-        txt_lugar = (DelayAutoCompleteTextView) findViewById(R.id.txt_lugar);
 
         if (intent.getExtras() != null) {
             if(intent.hasExtra(Dashboard.CURRENT_LONGITUDE) && intent.hasExtra(Dashboard.CURRENT_LATITUDE)) {
@@ -124,32 +119,7 @@ public class NuevoRecordatorio extends AppCompatActivity {
                 }
             }
         }
-        txt_lugar.setThreshold(THRESHOLD);
-        txt_lugar.setAdapter(new GeoAutoCompleteAdapter(this)); // 'this' is Activity instance
 
-        txt_lugar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
-                txt_lugar.setText(result.getAddress());
-            }
-        });
-
-        txt_lugar.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
     }
 
     public void onClick(View view){
@@ -235,15 +205,20 @@ public class NuevoRecordatorio extends AppCompatActivity {
         dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
         dateCal.set(Calendar.SECOND, timeCal.get(Calendar.SECOND));
 
+        Calendar stamp = Calendar.getInstance();
+
         fecha_limite = Long.toString(dateCal.getTimeInMillis());
-        timestamp = Long.toString(calendar.getTimeInMillis());
+        timestamp = Long.toString(stamp.getTimeInMillis());
 
 
         //En campo lugar, que sea editable, traiga todos los lugares
 
         if(titulo.equals("") || lugar.equals("")) {
             Toast.makeText(NuevoRecordatorio.this, getString(R.string.campos_incompletos), Toast.LENGTH_SHORT).show();
+        } else if(dateCal.before(stamp)) {
+            Toast.makeText(NuevoRecordatorio.this, getString(R.string.fecha_invalida), Toast.LENGTH_SHORT).show();
         } else {
+
              //Reemplazar por método de DBUtil
             DBHelper dbHelper = new DBHelper(this);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
